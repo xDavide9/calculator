@@ -8,9 +8,9 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CalculatorController {
 
@@ -23,7 +23,7 @@ public class CalculatorController {
     //todo figure out why the compiler is not giving the simple result of 2 to the operation of 5.6 minus 3
     //todo something that has to with double types in any operation anyways wtf
 
-    private static double count, temp;
+    private static BigDecimal count, temp;
     private static char operation;
     private static boolean hasCount, hasTemp;
     private static StringBuilder builder = new StringBuilder();
@@ -32,8 +32,8 @@ public class CalculatorController {
     private static final int maxDigits = 11;
 
     private void setDefaults() {
-        count = 0;
-        temp = 0;
+        count = new BigDecimal("0");
+        temp = new BigDecimal("0");
         operation = 0;
         hasCount = false;
         hasTemp = false;
@@ -55,6 +55,10 @@ public class CalculatorController {
         }
 
         String id = ((Node) e.getSource()).getId();
+
+        if (onLabel.equals("0")) {
+            builder = new StringBuilder();
+        }
 
         switch (id) {
             case "zeroButton" ->  {
@@ -101,31 +105,53 @@ public class CalculatorController {
             return;
 
         if (!hasCount) {
-            count = Double.parseDouble(label.getText());
+            count = new BigDecimal(label.getText());
             hasCount = true;
         } else {
-            temp = Double.parseDouble(label.getText());
+            temp = new BigDecimal(label.getText());
             hasTemp = true;
         }
 
         builder = new StringBuilder();
 
         //might give bugs
-        onLabel = String.valueOf(count).endsWith(".0") ?
-                String.valueOf(count).substring(0, String.valueOf(count).length() - 2) :
-                String.valueOf(count);
+        onLabel = String.valueOf(count);
         label.setText(onLabel);
 
         if (hasTemp) {
             if (operation != 0) {
                 switch (operation) {
-                    case '+' -> count = count + temp;
-                    case '-' -> count = count - temp;
-                    case '*' -> count = count * temp;
-                    case '/' -> count = count / temp;
+                    case '+' ->  {
+                        count = count.add(temp);
+                        count = count.stripTrailingZeros();
+                    }
+                    case '-' ->  {
+                        count = count.subtract(temp);
+                        count = count.stripTrailingZeros();
+                    }
+                    case '*' -> {
+                        count = count.setScale(15, RoundingMode.HALF_UP);
+                        count = count.multiply(temp);
+                        //do the operation before with a high scale and then scale it based on the number of left digits
+                        //in order to be in range of the max digits that can be displayed
+                        int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                        count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                        //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
+                        count = count.stripTrailingZeros();
+                        //removes the extra zeros that don't make a difference in the number
+                    }
+                    case '/' ->  {
+                        count = count.setScale(15, RoundingMode.HALF_UP);
+                        count = count.divide(temp, RoundingMode.HALF_UP);
+                        int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                        count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                        //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
+                        count = count.stripTrailingZeros();
+                        //removes the extra zeros that don't make a difference in the number
+                    }
                 }
                 hasTemp = false;
-                temp = 0;
+                temp = new BigDecimal("0");
             }
         }
 
@@ -154,30 +180,49 @@ public class CalculatorController {
             if (label.getText().equals(""))
                 return;
 
-            temp = Double.parseDouble(label.getText());
+            temp = new BigDecimal(label.getText());
             switch (operation) {
-                case '+' -> count = count + temp;
-                case '-' -> count = count - temp;
-                case '*' -> count = count * temp;
-                case '/' -> count = count / temp;
+                case '+' ->  {
+                    count = count.add(temp);
+                    count = count.stripTrailingZeros();
+                }
+                case '-' ->  {
+                    count = count.subtract(temp);
+                    count = count.stripTrailingZeros();
+                }
+                case '*' -> {
+                    count = count.setScale(15, RoundingMode.HALF_UP);
+                    count = count.multiply(temp);
+                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                    //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
+                    count = count.stripTrailingZeros();
+                    //removes the extra zeros that don't make a difference in the number
+                }
+                case '/' ->  {
+                    count = count.setScale(15, RoundingMode.HALF_UP);
+                    count = count.divide(temp, RoundingMode.HALF_UP);
+                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                    //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
+                    count = count.stripTrailingZeros();
+                    //removes the extra zeros that don't make a difference in the number
+                }
             }
             operation = 0;
-            temp = 0;
+            temp = new BigDecimal("0");
             hasTemp = false;
         } else {
-            //might give bugs
             return;
         }
 
         builder = new StringBuilder();
-        onLabel = String.valueOf(count).endsWith(".0") ?
-                    String.valueOf(count).substring(0, String.valueOf(count).length() - 2) :
-                        String.valueOf(count);
+        onLabel = String.valueOf(count);
         if (onLabel.length() > maxDigits)
             onLabel = "err";
         label.setText(onLabel);
 
-        count = 0;
+        count = new BigDecimal("0");
         hasCount = false;
     }
 
@@ -246,10 +291,10 @@ public class CalculatorController {
         }
         if (onLabel.equals("0"))
             return;
-        double value = Double.parseDouble(onLabel) * -1;
-        onLabel = String.valueOf(value).endsWith(".0") ?
-                    String.valueOf(value).substring(0, String.valueOf(value).length() - 2) :
-                        String.valueOf(value);
+        BigDecimal value = new BigDecimal(onLabel);
+        value = value.multiply(new BigDecimal("-1"));
+        value = value.stripTrailingZeros();
+        onLabel = String.valueOf(value);
         if (onLabel.length() > maxDigits)
             onLabel = "err";
         label.setText(onLabel);
@@ -301,10 +346,14 @@ public class CalculatorController {
             return;
         }
 
-        double temp = Math.pow(Double.parseDouble(label.getText()), 2);
-        onLabel = String.valueOf(temp).endsWith(".0") ?
-                String.valueOf(temp).substring(0, String.valueOf(temp).length() - 2) :
-                String.valueOf(temp);
+        BigDecimal value = new BigDecimal(onLabel);
+        value = value.pow(2);
+        if (value.toString().contains(".")) {
+            int leftDigits = value.toString().substring(0, value.toString().indexOf('.')).length();
+            value = value.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+            value = value.stripTrailingZeros();
+        }
+        onLabel = String.valueOf(value);
         if (onLabel.length() > maxDigits)
             onLabel = "err";
         label.setText(onLabel);
