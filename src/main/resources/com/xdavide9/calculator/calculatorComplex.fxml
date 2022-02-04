@@ -96,17 +96,17 @@
                   <Font name="Verdana Italic" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="toThePowerOfTwo" mnemonicParsing="false" onAction="#onToThePowerOfTwoPressed" prefHeight="105.0" prefWidth="131.0" text="x²" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <Button fx:id="toThePowerOfTwoButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="105.0" prefWidth="131.0" text="x²" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="minusButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="124.0" prefWidth="123.0" text="-" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="2">
+            <Button fx:id="toThePowerOfNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="124.0" prefWidth="123.0" text="xⁿ" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="2">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="timesButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="106.0" prefWidth="102.0" text="*" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="3">
+            <Button fx:id="radicalTwoButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="106.0" prefWidth="102.0" text="√x" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="3">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>

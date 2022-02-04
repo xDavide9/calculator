@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 public class CalculatorController {
@@ -19,9 +20,6 @@ public class CalculatorController {
 
     //all the members must be static because they are shared among the two instances
     //of this class created for calculatorComplex.fxml and calculatorSimple.fxml
-
-    //todo figure out why the compiler is not giving the simple result of 2 to the operation of 5.6 minus 3
-    //todo something that has to with double types in any operation anyways wtf
 
     private static BigDecimal count, temp;
     private static char operation;
@@ -55,6 +53,7 @@ public class CalculatorController {
         }
 
         String id = ((Node) e.getSource()).getId();
+        System.out.println(id);
 
         if (onLabel.equals("0")) {
             builder = new StringBuilder();
@@ -89,6 +88,13 @@ public class CalculatorController {
      * stores the number in the label either in count or temp
      * performs an operation if it was stored in memory
      * stores the operation to be performed next
+     *
+     * Currently, performed operations:
+     * Addition
+     * Subtraction
+     * Multiplication
+     * Division
+     * To The Power Of N
      */
     @FXML
     protected void onOperationPressed(ActionEvent e) {
@@ -100,6 +106,7 @@ public class CalculatorController {
         }
 
         String id = ((Node) e.getSource()).getId();
+        System.out.println(id);
 
         if (label.getText().equals(""))
             return;
@@ -149,6 +156,12 @@ public class CalculatorController {
                         count = count.stripTrailingZeros();
                         //removes the extra zeros that don't make a difference in the number
                     }
+                    case 'n' -> {   //to the power of n
+                        count = BigDecimal.valueOf(Math.pow(count.doubleValue(), temp.doubleValue()));
+                        int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                        count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                        count = count.stripTrailingZeros();
+                    }
                 }
                 hasTemp = false;
                 temp = new BigDecimal("0");
@@ -160,6 +173,7 @@ public class CalculatorController {
             case "minusButton" -> operation = '-';
             case "timesButton" -> operation = '*';
             case "divideButton" -> operation = '/';
+            case "toThePowerOfNButton" -> operation = 'n';
         }
     }
 
@@ -207,6 +221,12 @@ public class CalculatorController {
                     //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
                     count = count.stripTrailingZeros();
                     //removes the extra zeros that don't make a difference in the number
+                }
+                case 'n' -> {   //to the power of n
+                    count = BigDecimal.valueOf(Math.pow(count.doubleValue(), temp.doubleValue()));
+                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                    count = count.stripTrailingZeros();
                 }
             }
             operation = 0;
@@ -337,8 +357,17 @@ public class CalculatorController {
         }
     }
 
+    /**
+     * more operation performed singularly on the value being displayed already
+     * without the need to access either count or temp because you get the result immediately
+     * without pressing equal, like an instant change, so just change the number according to the operation
+     *
+     * Currently, performed operations:
+     * To The Power Of Two
+     * Square root
+     */
     @FXML
-    protected void onToThePowerOfTwoPressed() {
+    protected void onMoreOperationPressed(ActionEvent e) {
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
@@ -346,16 +375,28 @@ public class CalculatorController {
             return;
         }
 
+        String id = ((Node) e.getSource()).getId();
+        System.out.println(id);
+
         BigDecimal value = new BigDecimal(onLabel);
-        value = value.pow(2);
+        switch (id) {
+            case "toThePowerOfTwoButton" -> value = value.pow(2);
+            case "radicalTwoButton" -> value = value.sqrt(new MathContext(15));
+        }
+
         if (value.toString().contains(".")) {
             int leftDigits = value.toString().substring(0, value.toString().indexOf('.')).length();
             value = value.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
             value = value.stripTrailingZeros();
         }
+
         onLabel = String.valueOf(value);
         if (onLabel.length() > maxDigits)
             onLabel = "err";
+
+        builder = new StringBuilder();
+        builder.append(onLabel);
         label.setText(onLabel);
     }
+
 }
