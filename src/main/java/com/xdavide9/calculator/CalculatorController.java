@@ -53,7 +53,7 @@ public class CalculatorController {
         }
 
         String id = ((Node) e.getSource()).getId();
-        System.out.println(id);
+        System.out.println("Pressed: " + id);
 
         if (onLabel.equals("0")) {
             builder = new StringBuilder();
@@ -106,7 +106,7 @@ public class CalculatorController {
         }
 
         String id = ((Node) e.getSource()).getId();
-        System.out.println(id);
+        System.out.println("Pressed: " + id);
 
         if (label.getText().equals(""))
             return;
@@ -121,52 +121,49 @@ public class CalculatorController {
 
         builder = new StringBuilder();
 
-        //might give bugs
-        onLabel = String.valueOf(count);
-        label.setText(onLabel);
-
-        if (hasTemp) {
-            if (operation != 0) {
-                switch (operation) {
-                    case '+' ->  {
-                        count = count.add(temp);
-                        count = count.stripTrailingZeros();
-                    }
-                    case '-' ->  {
-                        count = count.subtract(temp);
-                        count = count.stripTrailingZeros();
-                    }
-                    case '*' -> {
-                        count = count.setScale(15, RoundingMode.HALF_UP);
-                        count = count.multiply(temp);
-                        //do the operation before with a high scale and then scale it based on the number of left digits
-                        //in order to be in range of the max digits that can be displayed
-                        int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                        count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                        //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
-                        count = count.stripTrailingZeros();
-                        //removes the extra zeros that don't make a difference in the number
-                    }
-                    case '/' ->  {
-                        count = count.setScale(15, RoundingMode.HALF_UP);
-                        count = count.divide(temp, RoundingMode.HALF_UP);
-                        int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                        count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                        //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
-                        count = count.stripTrailingZeros();
-                        //removes the extra zeros that don't make a difference in the number
-                    }
-                    case 'n' -> {   //to the power of n
-                        count = BigDecimal.valueOf(Math.pow(count.doubleValue(), temp.doubleValue()));
-                        int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                        count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                        count = count.stripTrailingZeros();
-                    }
+        if (hasTemp && operation != 0) {
+            switch (operation) {
+                case '+' ->  {
+                    count = count.add(temp);
+                    count = count.stripTrailingZeros();
                 }
-                hasTemp = false;
-                temp = new BigDecimal("0");
+                case '-' ->  {
+                    count = count.subtract(temp);
+                    count = count.stripTrailingZeros();
+                }
+                case '*' -> {
+                    count = count.setScale(15, RoundingMode.HALF_UP);
+                    count = count.multiply(temp);
+                    //do the operation before with a high scale and then scale it based on the number of left digits
+                    //in order to be in range of the max digits that can be displayed
+                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                    //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
+                    count = count.stripTrailingZeros();
+                    //removes the extra zeros that don't make a difference in the number
+                }
+                case '/' ->  {
+                    count = count.setScale(15, RoundingMode.HALF_UP);
+                    count = count.divide(temp, RoundingMode.HALF_UP);
+                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                    //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
+                    count = count.stripTrailingZeros();
+                    //removes the extra zeros that don't make a difference in the number
+                }
+                case 'n' -> {   //to the power of n
+                    count = BigDecimal.valueOf(Math.pow(count.doubleValue(), temp.doubleValue()));
+                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                    count = count.stripTrailingZeros();
+                }
             }
+            hasTemp = false;
+            temp = new BigDecimal("0");
         }
+
+        onLabel = count.toString();
+        label.setText(onLabel);
 
         switch (id) {
             case "plusButton" -> operation = '+';
@@ -182,7 +179,11 @@ public class CalculatorController {
      * and displays the final value of the expression evaluated so far
      */
     @FXML
-    protected void onEqualsPressed() {
+    protected void onEqualsPressed(ActionEvent e) {
+        //printing id to SO
+        String id = ((Node) e.getSource()).getId();
+        System.out.println("Pressed: " + id);
+
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
@@ -250,7 +251,11 @@ public class CalculatorController {
      * appends a point to the label
      */
     @FXML
-    protected void onPointPressed() {
+    protected void onPointPressed(ActionEvent e) {
+        //printing id to SO
+        String id = ((Node) e.getSource()).getId();
+        System.out.println("Pressed: " + id);
+
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
@@ -272,7 +277,11 @@ public class CalculatorController {
      * without affecting anything in memory
      */
     @FXML
-    protected void onDelPressed() {
+    protected void onDelPressed(ActionEvent e) {
+        //printing id to SO
+        String id = ((Node) e.getSource()).getId();
+        System.out.println("Pressed: " + id);
+
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
@@ -295,7 +304,11 @@ public class CalculatorController {
      * and removes any previous operation in memory
      */
     @FXML
-    protected void onAcPressed() {
+    protected void onAcPressed(ActionEvent e) {
+        //printing id to SO
+        String id = ((Node) e.getSource()).getId();
+        System.out.println("Pressed: " + id);
+
         setDefaults();
     }
 
@@ -303,7 +316,11 @@ public class CalculatorController {
      * changes the sign of the number in label
      */
     @FXML
-    protected void onPlusMinusPressed() {
+    protected void onPlusMinusPressed(ActionEvent e) {
+        //printing id to SO
+        String id = ((Node) e.getSource()).getId();
+        System.out.println("Pressed: " + id);
+
         onLabel = label.getText();
         if (onLabel.equals("err")) {
             setDefaults();
@@ -326,6 +343,10 @@ public class CalculatorController {
      */
     @FXML
     protected void onFnPressed(ActionEvent e) throws IOException {
+        //printing id to SO
+        String id = ((Node) e.getSource()).getId();
+        System.out.println("Pressed: " + id);
+
         FXMLLoader fxmlLoader;
         Stage stage;
         Scene scene;
@@ -376,7 +397,7 @@ public class CalculatorController {
         }
 
         String id = ((Node) e.getSource()).getId();
-        System.out.println(id);
+        System.out.println("Pressed: " + id);
 
         BigDecimal value = new BigDecimal(onLabel);
         switch (id) {
