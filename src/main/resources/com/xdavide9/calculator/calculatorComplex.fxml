@@ -56,7 +56,7 @@
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="sixButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="106.0" prefWidth="101.0" text="6" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Button fx:id="lnButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="106.0" prefWidth="101.0" text="ln" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
@@ -71,7 +71,7 @@
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="nineButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="78.0" prefWidth="110.0" text="9" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Button fx:id="logButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="78.0" prefWidth="110.0" text="log" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
@@ -86,7 +86,7 @@
                   <Font name="Verdana Italic" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="plusMinusButton" mnemonicParsing="false" onAction="#onPlusMinusPressed" prefHeight="101.0" prefWidth="144.0" text="+/-" textFill="#0096ff" GridPane.columnIndex="1">
+            <Button fx:id="percentButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="101.0" prefWidth="144.0" text="\%" textFill="#0096ff" GridPane.columnIndex="1">
                <font>
                   <Font name="Verdana Italic" size="20.0" />
                </font>
@@ -111,7 +111,7 @@
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="divideButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="95.0" prefWidth="106.0" text="/" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="4">
+            <Button fx:id="radicalNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="95.0" prefWidth="106.0" text="ⁿ√x" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="4">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>

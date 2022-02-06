@@ -95,6 +95,7 @@ public class CalculatorController {
      * Multiplication
      * Division
      * To The Power Of N
+     * Radical N
      */
     @FXML
     protected void onOperationPressed(ActionEvent e) {
@@ -157,6 +158,12 @@ public class CalculatorController {
                     count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
                     count = count.stripTrailingZeros();
                 }
+                case 'm' -> {
+                    count = BigDecimal.valueOf(Math.pow(count.doubleValue(), 1 / temp.doubleValue()));
+                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                    count = count.stripTrailingZeros();
+                }
             }
             hasTemp = false;
             temp = new BigDecimal("0");
@@ -171,6 +178,7 @@ public class CalculatorController {
             case "timesButton" -> operation = '*';
             case "divideButton" -> operation = '/';
             case "toThePowerOfNButton" -> operation = 'n';
+            case "radicalNButton" -> operation = 'm';
         }
     }
 
@@ -225,6 +233,12 @@ public class CalculatorController {
                 }
                 case 'n' -> {   //to the power of n
                     count = BigDecimal.valueOf(Math.pow(count.doubleValue(), temp.doubleValue()));
+                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
+                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+                    count = count.stripTrailingZeros();
+                }
+                case 'm' -> {
+                    count = BigDecimal.valueOf(Math.pow(count.doubleValue(), 1 / temp.doubleValue()));
                     int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
                     count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
                     count = count.stripTrailingZeros();
@@ -348,34 +362,24 @@ public class CalculatorController {
         System.out.println("Pressed: " + id);
 
         FXMLLoader fxmlLoader;
-        Stage stage;
-        Scene scene;
-        CalculatorController controller;
         onLabel = label.getText();
 
         if (isOnSimple) {
             isOnSimple = false;
             fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorComplex.fxml"));
-            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            scene = new Scene(fxmlLoader.load());
-            DarculaFX.applyDarculaStyle(scene);
-            //injecting the label's text through the controller each time you switch scene because it cannot be made static
-            controller = fxmlLoader.getController();
-            controller.label.setText(onLabel);
-            stage.setScene(scene);
-            stage.show();
         } else {
             isOnSimple = true;
             fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorSimple.fxml"));
-            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            scene = new Scene(fxmlLoader.load());
-            DarculaFX.applyDarculaStyle(scene);
-            //injecting the label's text through the controller each time you switch scene because it cannot be made static
-            controller = fxmlLoader.getController();
-            controller.label.setText(onLabel);
-            stage.setScene(scene);
-            stage.show();
         }
+        
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        Scene scene = new Scene(fxmlLoader.load());
+        DarculaFX.applyDarculaStyle(scene);
+        CalculatorController controller = fxmlLoader.getController();
+        //injecting the label's text through the controller each time you switch scene because it cannot be made static
+        controller.label.setText(onLabel);
+        stage.setScene(scene);
+        stage.show();
     }
 
     /**
@@ -386,6 +390,9 @@ public class CalculatorController {
      * Currently, performed operations:
      * To The Power Of Two
      * Square root
+     * Percentage
+     * Log
+     * ln
      */
     @FXML
     protected void onMoreOperationPressed(ActionEvent e) {
@@ -403,6 +410,21 @@ public class CalculatorController {
         switch (id) {
             case "toThePowerOfTwoButton" -> value = value.pow(2);
             case "radicalTwoButton" -> value = value.sqrt(new MathContext(15));
+            case "percentButton" -> value = value.divide(new BigDecimal("100"), RoundingMode.HALF_UP);  //divide by 100
+            case "logButton" ->  {
+                if (value.doubleValue() < 0) {
+                    displayErr();
+                    return;
+                }
+                value = BigDecimal.valueOf(Math.log10(value.doubleValue()));
+            }
+            case "lnButton" ->  {
+                if (value.doubleValue() < 0) {
+                    displayErr();
+                    return;
+                }
+                value = BigDecimal.valueOf(Math.log(value.doubleValue()));
+            }
         }
 
         if (value.toString().contains(".")) {
@@ -413,11 +435,31 @@ public class CalculatorController {
 
         onLabel = String.valueOf(value);
         if (onLabel.length() > maxDigits)
-            onLabel = "err";
+            displayErr();
 
         builder = new StringBuilder();
         builder.append(onLabel);
         label.setText(onLabel);
     }
+
+    /**
+     * Rounds the number depending on the max digits that are possible on the label
+     * in order to show the max precision
+     */
+    private void round(BigDecimal bigDecimal) {
+
+    }
+
+    /**
+     * Displays err on the label which is recognized as error condition
+     * When this condition is met all the other methods will call setDefaults()
+     * and return
+     */
+    private void displayErr() {
+        onLabel = "err";
+        label.setText(onLabel);
+    }
+
+
 
 }
