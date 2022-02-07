@@ -18,27 +18,17 @@ public class CalculatorController {
     @FXML
     private Label label;
 
-    //all the members must be static because they are shared among the two instances
-    //of this class created for calculatorComplex.fxml and calculatorSimple.fxml
-
+    //the members are static else upon injection the 2 fxml files would use different objects instead
     private static BigDecimal count, temp;
     private static char operation;
     private static boolean hasCount, hasTemp;
     private static StringBuilder builder = new StringBuilder();
     private static String onLabel;
     private static boolean isOnSimple = true;
-    private static final int maxDigits = 11;
 
-    private void setDefaults() {
-        count = new BigDecimal("0");
-        temp = new BigDecimal("0");
-        operation = 0;
-        hasCount = false;
-        hasTemp = false;
-        onLabel = "0";
-        label.setText(onLabel);
-        builder = new StringBuilder();
-    }
+    //some constants
+    private static final int maxDigits = 11;
+    private static final String errorString = "err";
 
     /**
      * appends to the label the number of the corresponding button
@@ -48,20 +38,20 @@ public class CalculatorController {
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
+            System.err.println("resetting");
             setDefaults();
             return;
         }
 
+        //printing id to SO
         String id = ((Node) e.getSource()).getId();
         System.out.println("Pressed: " + id);
 
-        if (onLabel.equals("0")) {
-            builder = new StringBuilder();
-        }
-
+        //don't want to chain 0s without a point
         switch (id) {
             case "zeroButton" ->  {
                 if (onLabel.startsWith("0") && (!onLabel.contains("."))) {
+                    System.err.println("can't append 0");
                     return;
                 }
                 builder.append(0);
@@ -77,9 +67,12 @@ public class CalculatorController {
             case "nineButton" -> builder.append(9);
         }
 
+        //update onLabel, check it's not too big for the label, set it on the label
         onLabel = builder.toString();
-        if (onLabel.length() > maxDigits)
+        if (isTooBig(onLabel.length())) {
+            System.err.println("too big!");
             onLabel = onLabel.substring(0, maxDigits);
+        }
 
         label.setText(onLabel);
     }
@@ -87,14 +80,13 @@ public class CalculatorController {
     /**
      * stores the number in the label either in count or temp
      * performs an operation if it was stored in memory
-     * stores the operation to be performed next
-     *
+     * stores the operation to be performed next.
      * Currently, performed operations:
-     * Addition
-     * Subtraction
-     * Multiplication
-     * Division
-     * To The Power Of N
+     * Addition,
+     * Subtraction,
+     * Multiplication,
+     * Division,
+     * To The Power Of N,
      * Radical N
      */
     @FXML
@@ -102,16 +94,22 @@ public class CalculatorController {
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
+            System.err.println("resetting");
             setDefaults();
             return;
         }
 
+        //printing id to SO
         String id = ((Node) e.getSource()).getId();
         System.out.println("Pressed: " + id);
 
+        //if label is empty there is no number to work with
         if (label.getText().equals(""))
             return;
 
+        //count is used to store either the first number ever input or the result of the operation that are going to
+        //be chained in the future, it holds the "count"
+        //temp is used to a temporary number used to perform the operations with
         if (!hasCount) {
             count = new BigDecimal(label.getText());
             hasCount = true;
@@ -120,58 +118,49 @@ public class CalculatorController {
             hasTemp = true;
         }
 
+        //resets the builder because the text on the label will change due to the operation
         builder = new StringBuilder();
 
+        //perform operations for which you need a temporary value an operation indeed, then resets temp in order to receive the next number
         if (hasTemp && operation != 0) {
             switch (operation) {
-                case '+' ->  {
-                    count = count.add(temp);
-                    count = count.stripTrailingZeros();
-                }
-                case '-' ->  {
-                    count = count.subtract(temp);
-                    count = count.stripTrailingZeros();
-                }
-                case '*' -> {
-                    count = count.setScale(15, RoundingMode.HALF_UP);
-                    count = count.multiply(temp);
-                    //do the operation before with a high scale and then scale it based on the number of left digits
-                    //in order to be in range of the max digits that can be displayed
-                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                    //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
-                    count = count.stripTrailingZeros();
-                    //removes the extra zeros that don't make a difference in the number
-                }
+                case '+' -> count = addition(count, temp);
+                case '-' -> count = subtraction(count, temp);
+                case '*' -> count = multiplication(count, temp);
                 case '/' ->  {
-                    count = count.setScale(15, RoundingMode.HALF_UP);
-                    count = count.divide(temp, RoundingMode.HALF_UP);
-                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                    //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
-                    count = count.stripTrailingZeros();
-                    //removes the extra zeros that don't make a difference in the number
+                    if (temp.doubleValue() == 0.0) {
+                        System.err.println("can't divide by 0");
+                        onLabel = errorString;
+                        label.setText(onLabel);
+                        return;
+                    }
+                    count = division(count, temp);
                 }
-                case 'n' -> {   //to the power of n
-                    count = BigDecimal.valueOf(Math.pow(count.doubleValue(), temp.doubleValue()));
-                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                    count = count.stripTrailingZeros();
-                }
+                case 'n' -> count = exponentiation(count, temp);
                 case 'm' -> {
-                    count = BigDecimal.valueOf(Math.pow(count.doubleValue(), 1 / temp.doubleValue()));
-                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                    count = count.stripTrailingZeros();
+                    if (temp.doubleValue() == 0.0) {
+                        System.err.println("can't extract 0th root");
+                        onLabel = errorString;
+                        label.setText(onLabel);
+                        return;
+                    }
+                    count = rootExtraction(count, temp);
                 }
             }
             hasTemp = false;
             temp = new BigDecimal("0");
+        } else {
+            System.err.println("no temp in memory");
         }
 
+        //update onLabel, check it's not too big and display it
         onLabel = count.toString();
+        if (isTooBig(onLabel.length())) {
+            onLabel = errorString;
+        }
         label.setText(onLabel);
 
+        //update operation
         switch (id) {
             case "plusButton" -> operation = '+';
             case "minusButton" -> operation = '-';
@@ -195,53 +184,42 @@ public class CalculatorController {
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
+            System.err.println("resetting");
             setDefaults();
             return;
         }
 
+        //check if there is still an operation left to do in memory
+        //if there is, perform it and therefore reset temp but also the operation itself because
+        //a cycle of operations ends when you press equals of course
+        //if there is not just return meaning this method does nothing
         if (operation != 0) {
             if (label.getText().equals(""))
                 return;
 
             temp = new BigDecimal(label.getText());
             switch (operation) {
-                case '+' ->  {
-                    count = count.add(temp);
-                    count = count.stripTrailingZeros();
-                }
-                case '-' ->  {
-                    count = count.subtract(temp);
-                    count = count.stripTrailingZeros();
-                }
-                case '*' -> {
-                    count = count.setScale(15, RoundingMode.HALF_UP);
-                    count = count.multiply(temp);
-                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                    //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
-                    count = count.stripTrailingZeros();
-                    //removes the extra zeros that don't make a difference in the number
-                }
+                case '+' -> count = addition(count, temp);
+                case '-' -> count = subtraction(count, temp);
+                case '*' -> count = multiplication(count, temp);
                 case '/' ->  {
-                    count = count.setScale(15, RoundingMode.HALF_UP);
-                    count = count.divide(temp, RoundingMode.HALF_UP);
-                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                    //-2 is because 1 is for the point . and 1 is for leaving a space to use +/- function
-                    count = count.stripTrailingZeros();
-                    //removes the extra zeros that don't make a difference in the number
+                    if (temp.doubleValue() == 0.0) {
+                        System.err.println("can't divide by 0");
+                        onLabel = errorString;
+                        label.setText(onLabel);
+                        return;
+                    }
+                    count = division(count, temp);
                 }
-                case 'n' -> {   //to the power of n
-                    count = BigDecimal.valueOf(Math.pow(count.doubleValue(), temp.doubleValue()));
-                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                    count = count.stripTrailingZeros();
-                }
+                case 'n' -> count = exponentiation(count, temp);
                 case 'm' -> {
-                    count = BigDecimal.valueOf(Math.pow(count.doubleValue(), 1 / temp.doubleValue()));
-                    int leftDigits = count.toString().substring(0, count.toString().indexOf('.')).length();
-                    count = count.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-                    count = count.stripTrailingZeros();
+                    if (temp.doubleValue() == 0.0) {
+                        System.err.println("can't extract 0th root");
+                        onLabel = errorString;
+                        label.setText(onLabel);
+                        return;
+                    }
+                    count = rootExtraction(count, temp);
                 }
             }
             operation = 0;
@@ -251,12 +229,16 @@ public class CalculatorController {
             return;
         }
 
+        //reset the builder because the text on the label has changed due to the operation
         builder = new StringBuilder();
+
+        //update onLabel, check it's not too big, if it is print the error string
         onLabel = String.valueOf(count);
-        if (onLabel.length() > maxDigits)
-            onLabel = "err";
+        if (isTooBig(onLabel.length()))
+            onLabel = errorString;
         label.setText(onLabel);
 
+        //reset count for a new cycle of operations to start over
         count = new BigDecimal("0");
         hasCount = false;
     }
@@ -273,12 +255,16 @@ public class CalculatorController {
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
+            System.err.println("resetting");
             setDefaults();
             return;
         }
 
+        //cannot add more than one point
         if (onLabel.contains("."))
             return;
+
+        //reset builder, append onLabel to builder, add the point, set onLabel to label again
         builder = new StringBuilder();
         builder.append(onLabel);
         builder.append(".");
@@ -299,12 +285,16 @@ public class CalculatorController {
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
+            System.err.println("resetting");
             setDefaults();
             return;
         }
 
+        //0 is considered the default value of the label, so it may not be erased
         if (onLabel.equals("0"))
             return;
+
+        //reset builder, remove one character from onLabel, re-append onLabel to builder, set onLabel again
         builder = new StringBuilder();
         onLabel = onLabel.substring(0, onLabel.length() - 1);
         if (onLabel.equals(""))
@@ -335,19 +325,27 @@ public class CalculatorController {
         String id = ((Node) e.getSource()).getId();
         System.out.println("Pressed: " + id);
 
+        //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
+            System.err.println("resetting");
             setDefaults();
             return;
         }
+
+        //can't change sign of 0
         if (onLabel.equals("0"))
             return;
+
+        //multiply the value on label by -1 to change its sign and strip trailing 0s from it
         BigDecimal value = new BigDecimal(onLabel);
         value = value.multiply(new BigDecimal("-1"));
         value = value.stripTrailingZeros();
+
+        //checking it's not too big for the screen else display the error string, set onLabel again
         onLabel = String.valueOf(value);
-        if (onLabel.length() > maxDigits)
-            onLabel = "err";
+        if (isTooBig(onLabel.length()))
+            onLabel = errorString;
         label.setText(onLabel);
     }
 
@@ -361,9 +359,19 @@ public class CalculatorController {
         String id = ((Node) e.getSource()).getId();
         System.out.println("Pressed: " + id);
 
+        //error checking
+        onLabel = label.getText();
+        if (onLabel.equals("err")) {
+            System.err.println("resetting");
+            setDefaults();
+            return;
+        }
+
+        //define fxmlLoader and get text;
         FXMLLoader fxmlLoader;
         onLabel = label.getText();
 
+        //toggle structure with a boolean to load the other fxml file when one is open
         if (isOnSimple) {
             isOnSimple = false;
             fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorComplex.fxml"));
@@ -371,7 +379,8 @@ public class CalculatorController {
             isOnSimple = true;
             fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorSimple.fxml"));
         }
-        
+
+        //apply configuration
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         Scene scene = new Scene(fxmlLoader.load());
         DarculaFX.applyDarculaStyle(scene);
@@ -385,27 +394,29 @@ public class CalculatorController {
     /**
      * more operation performed singularly on the value being displayed already
      * without the need to access either count or temp because you get the result immediately
-     * without pressing equal, like an instant change, so just change the number according to the operation
-     *
+     * without pressing equal, like an instant change, so just change the number according to the operation.
      * Currently, performed operations:
-     * To The Power Of Two
-     * Square root
-     * Percentage
-     * Log
-     * ln
+     * To The Power Of Two,
+     * Square root,
+     * Percentage,
+     * Log,
+     * ln,
      */
     @FXML
     protected void onMoreOperationPressed(ActionEvent e) {
         //error checking
         onLabel = label.getText();
         if (onLabel.equals("err")) {
+            System.err.println("resetting");
             setDefaults();
             return;
         }
 
+        //printing id to SO
         String id = ((Node) e.getSource()).getId();
         System.out.println("Pressed: " + id);
 
+        //get the value on label and perform relative operation
         BigDecimal value = new BigDecimal(onLabel);
         switch (id) {
             case "toThePowerOfTwoButton" -> value = value.pow(2);
@@ -427,12 +438,12 @@ public class CalculatorController {
             }
         }
 
+        //round if decimals are present
         if (value.toString().contains(".")) {
-            int leftDigits = value.toString().substring(0, value.toString().indexOf('.')).length();
-            value = value.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
-            value = value.stripTrailingZeros();
+            value = round(value);
         }
 
+        //update onLabel, check it's not too big, clear builder, append onLabel, display it
         onLabel = String.valueOf(value);
         if (onLabel.length() > maxDigits)
             displayErr();
@@ -443,11 +454,33 @@ public class CalculatorController {
     }
 
     /**
+     * Resets all the variables of the program to default values
+     * meaning it's like running again
+     */
+    private void setDefaults() {
+        count = new BigDecimal("0");
+        temp = new BigDecimal("0");
+        operation = 0;
+        hasCount = false;
+        hasTemp = false;
+        onLabel = "0";
+        label.setText(onLabel);
+        builder = new StringBuilder();
+    }
+
+    /**
      * Rounds the number depending on the max digits that are possible on the label
      * in order to show the max precision
+     *
+     * @throws IllegalArgumentException if it doesn't have a point
      */
-    private void round(BigDecimal bigDecimal) {
-
+    private BigDecimal round(BigDecimal d) {
+        if (!d.toString().contains("."))
+            throw new IllegalArgumentException();
+        int leftDigits = d.toString().substring(0, d.toString().indexOf('.')).length();
+        d = d.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+        d = d.stripTrailingZeros();
+        return d;
     }
 
     /**
@@ -460,6 +493,79 @@ public class CalculatorController {
         label.setText(onLabel);
     }
 
+    /**
+     * checks if the number is bigger than the max digits possible on the label
+     */
+    private boolean isTooBig(int i) {
+        return i > maxDigits;
+    }
 
+    /**
+     * updates a with the sum of a and b
+     */
+    private BigDecimal addition(BigDecimal a, BigDecimal b) {
+        a = a.add(b);
+        a = a.stripTrailingZeros();
+        System.out.println("result: " + a);
+        return a;
+    }
+
+    /**
+     * updates a with the difference of a and b
+     */
+    private BigDecimal subtraction(BigDecimal a, BigDecimal b) {
+        a = a.subtract(b);
+        a = a.stripTrailingZeros();
+        System.out.println("result: " + a);
+        return a;
+    }
+
+    /**
+     * updates a with the product of a and b
+     */
+    private BigDecimal multiplication(BigDecimal a, BigDecimal b) {
+        a = a.setScale(15, RoundingMode.HALF_UP);
+        a = a.multiply(b);
+        if (a.toString().contains("."))
+            a = round(a);
+        System.out.println("result: " + a);
+        return a;
+    }
+
+    /**
+     * updates a with the quotient of a and b
+     */
+    private BigDecimal division(BigDecimal a, BigDecimal b) {
+        a = a.setScale(15, RoundingMode.HALF_UP);
+        a = a.divide(b, RoundingMode.HALF_UP);
+        if (a.toString().contains("."))
+            a = round(a);
+        System.out.println("result: " + a);
+        return a;
+    }
+
+    /**
+     * updates a with the power of a and b
+     */
+    private BigDecimal exponentiation(BigDecimal a, BigDecimal b) {
+        a = a.setScale(15, RoundingMode.HALF_UP);
+        a = BigDecimal.valueOf(Math.pow(a.doubleValue(), b.doubleValue()));
+        if (a.toString().contains("."))
+            a = round(a);
+        System.out.println("result: " + a);
+        return a;
+    }
+
+    /**
+     * updates a with the bth root of a
+     */
+    private BigDecimal rootExtraction(BigDecimal a, BigDecimal b) {
+        a = a.setScale(15, RoundingMode.HALF_UP);
+        a = BigDecimal.valueOf(Math.pow(a.doubleValue(), 1 / b.doubleValue()));
+        if (a.toString().contains("."))
+            a = round(a);
+        System.out.println("result: " + a);
+        return a;
+    }
 
 }
