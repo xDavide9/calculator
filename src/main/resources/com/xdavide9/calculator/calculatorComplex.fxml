@@ -41,7 +41,7 @@
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="threeButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="119.0" prefWidth="104.0" text="3" GridPane.columnIndex="2" GridPane.rowIndex="3">
+            <Button fx:id="logBaseNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="119.0" prefWidth="104.0" text="logᵤ" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>

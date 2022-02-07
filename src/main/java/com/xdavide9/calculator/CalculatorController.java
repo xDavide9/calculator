@@ -87,7 +87,8 @@ public class CalculatorController {
      * Multiplication,
      * Division,
      * To The Power Of N,
-     * Radical N
+     * Radical N,
+     * Log Base N
      */
     @FXML
     protected void onOperationPressed(ActionEvent e) {
@@ -136,15 +137,32 @@ public class CalculatorController {
                     }
                     count = division(count, temp);
                 }
-                case 'n' -> count = exponentiation(count, temp);
+                case 'n' ->  {
+                    if (count.doubleValue() <= 0) {
+                        System.err.println("can't extract power");
+                        onLabel = errorString;
+                        label.setText(onLabel);
+                        return;
+                    }
+                    count = exponentiation(count, temp);
+                }
                 case 'm' -> {
-                    if (temp.doubleValue() == 0.0) {
-                        System.err.println("can't extract 0th root");
+                    if (temp.doubleValue() == 0.0 || !String.valueOf(temp.doubleValue()).endsWith(".0") || count.doubleValue() < 0.0) {
+                        System.err.println("can't extract root");
                         onLabel = errorString;
                         label.setText(onLabel);
                         return;
                     }
                     count = rootExtraction(count, temp);
+                }
+                case 'l' -> {
+                    if (temp.doubleValue() == 1.0 || temp.doubleValue() <= 0.0 || count.doubleValue() < 0.0) {
+                        System.err.println("can't perform this log");
+                        onLabel = errorString;
+                        label.setText(onLabel);
+                        return;
+                    }
+                    count = logBaseN(count, temp);
                 }
             }
             hasTemp = false;
@@ -153,10 +171,12 @@ public class CalculatorController {
             System.err.println("no temp in memory");
         }
 
-        //update onLabel, check it's not too big and display it
+        //update onLabel, check it's not too big, display it, update builder
         onLabel = count.toString();
         if (isTooBig(onLabel.length())) {
-            onLabel = errorString;
+            System.err.println("too big");
+            displayErr();
+            return;
         }
         label.setText(onLabel);
 
@@ -168,6 +188,7 @@ public class CalculatorController {
             case "divideButton" -> operation = '/';
             case "toThePowerOfNButton" -> operation = 'n';
             case "radicalNButton" -> operation = 'm';
+            case "logBaseNButton" -> operation = 'l';
         }
     }
 
@@ -211,15 +232,32 @@ public class CalculatorController {
                     }
                     count = division(count, temp);
                 }
-                case 'n' -> count = exponentiation(count, temp);
+                case 'n' ->  {
+                    if (count.doubleValue() <= 0) {
+                        System.err.println("can't extract power");
+                        onLabel = errorString;
+                        label.setText(onLabel);
+                        return;
+                    }
+                    count = exponentiation(count, temp);
+                }
                 case 'm' -> {
-                    if (temp.doubleValue() == 0.0) {
-                        System.err.println("can't extract 0th root");
+                    if (temp.doubleValue() == 0.0 || !String.valueOf(temp.doubleValue()).endsWith(".0") || count.doubleValue() < 0.0) {
+                        System.err.println("can't extract root");
                         onLabel = errorString;
                         label.setText(onLabel);
                         return;
                     }
                     count = rootExtraction(count, temp);
+                }
+                case 'l' -> {
+                    if (temp.doubleValue() == 1.0 || temp.doubleValue() <= 0.0 || count.doubleValue() < 0.0) {
+                        System.err.println("can't perform this log");
+                        onLabel = errorString;
+                        label.setText(onLabel);
+                        return;
+                    }
+                    count = logBaseN(count, temp);
                 }
             }
             operation = 0;
@@ -232,11 +270,15 @@ public class CalculatorController {
         //reset the builder because the text on the label has changed due to the operation
         builder = new StringBuilder();
 
-        //update onLabel, check it's not too big, if it is print the error string
+        //update onLabel, check it's not too big, update builder
         onLabel = String.valueOf(count);
-        if (isTooBig(onLabel.length()))
-            onLabel = errorString;
+        if (isTooBig(onLabel.length())) {
+            System.out.println("too big");
+            displayErr();
+            return;
+        }
         label.setText(onLabel);
+        builder.append(onLabel);
 
         //reset count for a new cycle of operations to start over
         count = new BigDecimal("0");
@@ -342,10 +384,16 @@ public class CalculatorController {
         value = value.multiply(new BigDecimal("-1"));
         value = value.stripTrailingZeros();
 
-        //checking it's not too big for the screen else display the error string, set onLabel again
+        //checking it's not too big, update builder, display it
         onLabel = String.valueOf(value);
-        if (isTooBig(onLabel.length()))
-            onLabel = errorString;
+        builder = new StringBuilder();
+        builder.append(onLabel);
+        if (isTooBig(onLabel.length())) {
+            System.err.println("too big");
+            displayErr();
+            return;
+        }
+
         label.setText(onLabel);
     }
 
@@ -420,17 +468,33 @@ public class CalculatorController {
         BigDecimal value = new BigDecimal(onLabel);
         switch (id) {
             case "toThePowerOfTwoButton" -> value = value.pow(2);
-            case "radicalTwoButton" -> value = value.sqrt(new MathContext(15));
-            case "percentButton" -> value = value.divide(new BigDecimal("100"), RoundingMode.HALF_UP);  //divide by 100
+            case "radicalTwoButton" ->  {
+                if (value.doubleValue() < 0.0) {
+                    System.err.println("can't extract square root of a negative number");
+                    displayErr();
+                    return;
+                }
+                value = value.sqrt(new MathContext(15));
+            }
+            case "percentButton" ->  {
+                if (value.doubleValue() < 0.0) {
+                    System.err.println("can't calculate percentage off a negative number");
+                    displayErr();
+                    return;
+                }
+                value = value.divide(new BigDecimal("100"), RoundingMode.HALF_UP);  //divide by 100
+            }
             case "logButton" ->  {
-                if (value.doubleValue() < 0) {
+                if (value.doubleValue() <= 0.0 || value.doubleValue() == 1.0) {
+                    System.err.println("can't log a negative number or 0 or 1");
                     displayErr();
                     return;
                 }
                 value = BigDecimal.valueOf(Math.log10(value.doubleValue()));
             }
             case "lnButton" ->  {
-                if (value.doubleValue() < 0) {
+                if (value.doubleValue() <= 0.0 || value.doubleValue() == 1.0) {
+                    System.err.println("can't ln a negative number or 0 or 1");
                     displayErr();
                     return;
                 }
@@ -445,8 +509,11 @@ public class CalculatorController {
 
         //update onLabel, check it's not too big, clear builder, append onLabel, display it
         onLabel = String.valueOf(value);
-        if (onLabel.length() > maxDigits)
+        if (isTooBig(onLabel.length())) {
+            System.err.println("too big");
             displayErr();
+            return;
+        }
 
         builder = new StringBuilder();
         builder.append(onLabel);
@@ -562,6 +629,18 @@ public class CalculatorController {
     private BigDecimal rootExtraction(BigDecimal a, BigDecimal b) {
         a = a.setScale(15, RoundingMode.HALF_UP);
         a = BigDecimal.valueOf(Math.pow(a.doubleValue(), 1 / b.doubleValue()));
+        if (a.toString().contains("."))
+            a = round(a);
+        System.out.println("result: " + a);
+        return a;
+    }
+
+    /**
+     * updates a with the value of log base b of a
+     */
+    private BigDecimal logBaseN(BigDecimal a, BigDecimal b) {
+        a = a.setScale(15, RoundingMode.HALF_UP);
+        a = BigDecimal.valueOf(Math.log(a.doubleValue()) / Math.log(b.doubleValue()));
         if (a.toString().contains("."))
             a = round(a);
         System.out.println("result: " + a);
