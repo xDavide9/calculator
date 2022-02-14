@@ -26,17 +26,17 @@
           <RowConstraints minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="zeroButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="117.0" prefWidth="86.0" text="0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Button fx:id="reciprocalButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="117.0" prefWidth="86.0" text="1/x" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="oneButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="129.0" prefWidth="110.0" text="1" GridPane.rowIndex="3">
+            <Button fx:id="atanButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="129.0" prefWidth="110.0" text="atan" GridPane.rowIndex="3">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="twoButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="119.0" prefWidth="106.0" text="2" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <Button fx:id="tanButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="119.0" prefWidth="106.0" text="tan" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
@@ -46,12 +46,12 @@
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="fourButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="91.0" prefWidth="93.0" text="4" GridPane.rowIndex="2">
+            <Button fx:id="acosButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="91.0" prefWidth="93.0" text="acos" GridPane.rowIndex="2">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="fiveButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="113.0" prefWidth="103.0" text="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Button fx:id="cosButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="113.0" prefWidth="103.0" text="cos" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
@@ -61,12 +61,12 @@
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="sevenButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="103.0" prefWidth="111.0" text="7" GridPane.rowIndex="1">
+            <Button fx:id="asinButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="103.0" prefWidth="111.0" text="asin" GridPane.rowIndex="1">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="eightButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="87.0" prefWidth="104.0" text="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Button fx:id="sinButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="87.0" prefWidth="104.0" text="sin" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <font>
                   <Font name="Verdana" size="20.0" />
                </font>
@@ -76,12 +76,12 @@
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="delButton" mnemonicParsing="false" onAction="#onDelPressed" prefHeight="67.0" prefWidth="80.0" text="DEL" GridPane.columnIndex="3">
+            <Button fx:id="eButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="67.0" prefWidth="80.0" text="e" GridPane.columnIndex="3">
                <font>
                   <Font name="Verdana Italic" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="acButton" mnemonicParsing="false" onAction="#onAcPressed" prefHeight="92.0" prefWidth="126.0" text="AC" GridPane.columnIndex="2">
+            <Button fx:id="piButton" mnemonicParsing="false" onAction="#OnNumberPressed" prefHeight="92.0" prefWidth="126.0" text="pi" GridPane.columnIndex="2">
                <font>
                   <Font name="Verdana Italic" size="20.0" />
                </font>
@@ -116,7 +116,7 @@
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="equalsButton" mnemonicParsing="false" onAction="#onEqualsPressed" prefHeight="125.0" prefWidth="157.0" text="=" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <Button fx:id="radicalThreeButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="125.0" prefWidth="157.0" text="³√x" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>

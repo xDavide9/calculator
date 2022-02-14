@@ -51,6 +51,10 @@ public class CalculatorController {
         String id = ((Node) e.getSource()).getId();
         System.out.println("Pressed: " + id);
 
+        //if onLabel is 0, need to substitute that 0 with other numbers instaed of appending to that 0
+        if (onLabel.equals("0"))
+            builder = new StringBuilder();
+
         //don't want to chain 0s without a point
         switch (id) {
             case "zeroButton" ->  {
@@ -69,6 +73,9 @@ public class CalculatorController {
             case "sevenButton" -> builder.append(7);
             case "eightButton" -> builder.append(8);
             case "nineButton" -> builder.append(9);
+            case "piButton" -> builder.append(round(BigDecimal.valueOf(Math.PI)));
+            case "eButton" -> builder.append(round(BigDecimal.valueOf(Math.E)));
+
         }
 
         //update onLabel, check it's not too big for the label, set it on the label
@@ -488,7 +495,7 @@ public class CalculatorController {
                     displayErr();
                     return;
                 }
-                value = value.divide(new BigDecimal("100"), RoundingMode.HALF_UP);  //divide by 100
+                value = division(value, BigDecimal.valueOf(100)); //divide by 100
             }
             case "logButton" ->  {
                 if (value.doubleValue() <= 0.0 || value.doubleValue() == 1.0) {
@@ -505,6 +512,35 @@ public class CalculatorController {
                     return;
                 }
                 value = BigDecimal.valueOf(Math.log(value.doubleValue()));
+            }
+            case "sinButton" -> value = BigDecimal.valueOf(Math.sin(value.doubleValue()));
+            case "cosButton" -> value = BigDecimal.valueOf(Math.cos(value.doubleValue()));
+            case "tanButton" -> value = BigDecimal.valueOf(Math.tan(value.doubleValue()));
+            case "asinButton" -> {
+                if (value.doubleValue() < -1.0 || value.doubleValue() > 1.0) {
+                    System.err.println("Out of asin domain");
+                    displayErr();
+                    return;
+                }
+                value = BigDecimal.valueOf(Math.asin(value.doubleValue()));
+            }
+            case "acosButton" -> {
+                if (value.doubleValue() < -1.0 || value.doubleValue() > 1.0) {
+                    System.err.println("Out of acos domain");
+                    displayErr();
+                    return;
+                }
+                value = BigDecimal.valueOf(Math.acos(value.doubleValue()));
+            }
+            case "atanButton" -> value = BigDecimal.valueOf(Math.atan(value.doubleValue()));
+            case "radicalThreeButton" -> value = BigDecimal.valueOf(Math.cbrt(value.doubleValue()));
+            case "reciprocalButton" -> {
+                if (value.doubleValue() == 0.0) {
+                    System.err.println("Reciprocal of 0 does not exist!");
+                    displayErr();
+                    return;
+                }
+                value = division(new BigDecimal("1"), value);
             }
         }
 
@@ -652,5 +688,4 @@ public class CalculatorController {
         System.out.println("result: " + a);
         return a;
     }
-
 }
