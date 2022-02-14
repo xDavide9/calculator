@@ -76,52 +76,52 @@
                   <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="delButton" mnemonicParsing="false" onAction="#onDelPressed" prefHeight="67.0" prefWidth="80.0" text="DEL" textFill="#0096ff" GridPane.columnIndex="3">
+            <Button fx:id="delButton" mnemonicParsing="false" onAction="#onDelPressed" prefHeight="67.0" prefWidth="80.0" text="DEL" GridPane.columnIndex="3">
                <font>
                   <Font name="Verdana Italic" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="acButton" mnemonicParsing="false" onAction="#onAcPressed" prefHeight="92.0" prefWidth="126.0" text="AC" textFill="#0096ff" GridPane.columnIndex="2">
+            <Button fx:id="acButton" mnemonicParsing="false" onAction="#onAcPressed" prefHeight="92.0" prefWidth="126.0" text="AC" GridPane.columnIndex="2">
                <font>
                   <Font name="Verdana Italic" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="percentButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="101.0" prefWidth="144.0" text="\%" textFill="#0096ff" GridPane.columnIndex="1">
+            <Button fx:id="percentButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="101.0" prefWidth="144.0" text="\%" GridPane.columnIndex="1">
                <font>
                   <Font name="Verdana Italic" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="fnButton" mnemonicParsing="false" onAction="#onFnPressed" prefHeight="81.0" prefWidth="132.0" text="FN" textFill="#0096ff">
+            <Button fx:id="fnButton" mnemonicParsing="false" onAction="#onFnPressed" prefHeight="81.0" prefWidth="132.0" text="FN">
                <font>
                   <Font name="Verdana Italic" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="toThePowerOfTwoButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="105.0" prefWidth="131.0" text="x²" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <Button fx:id="toThePowerOfTwoButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="105.0" prefWidth="131.0" text="x²" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="toThePowerOfNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="124.0" prefWidth="123.0" text="xⁿ" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="2">
+            <Button fx:id="toThePowerOfNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="124.0" prefWidth="123.0" text="xⁿ" GridPane.columnIndex="3" GridPane.rowIndex="2">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="radicalTwoButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="106.0" prefWidth="102.0" text="√x" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="3">
+            <Button fx:id="radicalTwoButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="106.0" prefWidth="102.0" text="√x" GridPane.columnIndex="3" GridPane.rowIndex="3">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="radicalNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="95.0" prefWidth="106.0" text="ⁿ√x" textFill="#0096ff" GridPane.columnIndex="3" GridPane.rowIndex="4">
+            <Button fx:id="radicalNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="95.0" prefWidth="106.0" text="ⁿ√x" GridPane.columnIndex="3" GridPane.rowIndex="4">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="equalsButton" mnemonicParsing="false" onAction="#onEqualsPressed" prefHeight="125.0" prefWidth="157.0" text="=" textFill="#0096ff" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <Button fx:id="equalsButton" mnemonicParsing="false" onAction="#onEqualsPressed" prefHeight="125.0" prefWidth="157.0" text="=" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="pointButton" mnemonicParsing="false" onAction="#onPointPressed" prefHeight="110.0" prefWidth="158.0" text="." textFill="#0096ff" GridPane.rowIndex="4">
+            <Button fx:id="pointButton" mnemonicParsing="false" onAction="#onPointPressed" prefHeight="110.0" prefWidth="158.0" text="." GridPane.rowIndex="4">
                <font>
                   <Font name="Verdana Bold" size="20.0" />
                </font>

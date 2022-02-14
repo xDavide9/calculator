@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -18,7 +19,10 @@ public class CalculatorController {
     @FXML
     private Label label;
 
-    //the members are static else upon injection the 2 fxml files would use different objects instead
+    @FXML
+    private Button fnButton;
+
+    //the members are static else upon injection the 2 fxml files would use different objects
     private static BigDecimal count, temp;
     private static char operation;
     private static boolean hasCount, hasTemp;
@@ -435,6 +439,8 @@ public class CalculatorController {
         CalculatorController controller = fxmlLoader.getController();
         //injecting the label's text through the controller each time you switch scene because it cannot be made static
         controller.label.setText(onLabel);
+        //injecting focus on the fn button to prevent an annoying effect otherwise occurring
+        controller.fnButton.requestFocus();
         stage.setScene(scene);
         stage.show();
     }
