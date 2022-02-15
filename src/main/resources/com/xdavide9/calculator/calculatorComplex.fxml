@@ -98,32 +98,32 @@
             </Button>
             <Button fx:id="toThePowerOfTwoButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="105.0" prefWidth="131.0" text="x²" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <font>
-                  <Font name="Verdana Bold" size="20.0" />
+                  <Font name="Verdana" size="20.0" />
                </font>
             </Button>
             <Button fx:id="toThePowerOfNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="124.0" prefWidth="123.0" text="xⁿ" GridPane.columnIndex="3" GridPane.rowIndex="2">
                <font>
-                  <Font name="Verdana Bold" size="20.0" />
+                  <Font name="Verdana" size="20.0" />
                </font>
             </Button>
             <Button fx:id="radicalTwoButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="106.0" prefWidth="102.0" text="√x" GridPane.columnIndex="3" GridPane.rowIndex="3">
                <font>
-                  <Font name="Verdana Bold" size="20.0" />
+                  <Font name="Verdana" size="20.0" />
                </font>
             </Button>
             <Button fx:id="radicalNButton" mnemonicParsing="false" onAction="#onOperationPressed" prefHeight="95.0" prefWidth="106.0" text="ⁿ√x" GridPane.columnIndex="3" GridPane.rowIndex="4">
                <font>
-                  <Font name="Verdana Bold" size="20.0" />
+                  <Font name="Verdana" size="20.0" />
                </font>
             </Button>
             <Button fx:id="radicalThreeButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="125.0" prefWidth="157.0" text="³√x" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <font>
-                  <Font name="Verdana Bold" size="20.0" />
+                  <Font name="Verdana" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="pointButton" mnemonicParsing="false" onAction="#onPointPressed" prefHeight="110.0" prefWidth="158.0" text="." GridPane.rowIndex="4">
+            <Button fx:id="factorialButton" mnemonicParsing="false" onAction="#onMoreOperationPressed" prefHeight="110.0" prefWidth="158.0" text="x!" GridPane.rowIndex="4">
                <font>
-                  <Font name="Verdana Bold" size="20.0" />
+                  <Font name="Verdana" size="20.0" />
                </font>
             </Button>
          </children>

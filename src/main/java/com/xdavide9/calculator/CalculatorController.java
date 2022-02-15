@@ -542,6 +542,14 @@ public class CalculatorController {
                 }
                 value = division(new BigDecimal("1"), value);
             }
+            case "factorialButton" -> {
+                if (value.toString().contains(".") || value.doubleValue() < 0.0) {
+                    System.err.println("factorial must be a positive integer");
+                    displayErr();
+                    return;
+                }
+                value = BigDecimal.valueOf(factorial(value.doubleValue()));
+            }
         }
 
         //round if decimals are present
@@ -687,5 +695,15 @@ public class CalculatorController {
             a = round(a);
         System.out.println("result: " + a);
         return a;
+    }
+
+    /**
+     * factorial using recursion
+     */
+    private double factorial(double a) {
+        if (a == 0.0)
+            return 1.0;
+        else
+            return (a * factorial(a - 1));
     }
 }
