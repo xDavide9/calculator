@@ -1,11 +1,11 @@
 package com.xdavide9.calculator;
 
-import com.github.mouse0w0.darculafx.DarculaFX;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.Objects;
 
 public class CalculatorApplication extends Application {
 
@@ -16,7 +16,7 @@ public class CalculatorApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorSimple.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Calculator");
-        DarculaFX.applyDarculaStyle(scene);
+        scene.getStylesheets().add(Objects.requireNonNull(CalculatorApplication.class.getResource("darcula.css")).toExternalForm());
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();

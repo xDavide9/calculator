@@ -1,6 +1,5 @@
 package com.xdavide9.calculator;
 
-import com.github.mouse0w0.darculafx.DarculaFX;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 public class CalculatorController {
 
@@ -434,7 +434,7 @@ public class CalculatorController {
         //apply configuration
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         Scene scene = new Scene(fxmlLoader.load());
-        DarculaFX.applyDarculaStyle(scene);
+        scene.getStylesheets().add(Objects.requireNonNull(CalculatorApplication.class.getResource("darcula.css")).toExternalForm());
         CalculatorController controller = fxmlLoader.getController();
         //injecting the label's text through the controller each time you switch scene because it cannot be made static
         controller.label.setText(onLabel);
