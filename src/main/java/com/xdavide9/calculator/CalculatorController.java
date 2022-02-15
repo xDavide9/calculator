@@ -51,7 +51,7 @@ public class CalculatorController {
         String id = ((Node) e.getSource()).getId();
         System.out.println("Pressed: " + id);
 
-        //if onLabel is 0, need to substitute that 0 with other numbers instaed of appending to that 0
+        //if onLabel is 0, need to substitute that 0 with other numbers instead of appending to that 0
         if (onLabel.equals("0"))
             builder = new StringBuilder();
 
@@ -142,8 +142,7 @@ public class CalculatorController {
                 case '/' ->  {
                     if (temp.doubleValue() == 0.0) {
                         System.err.println("can't divide by 0");
-                        onLabel = errorString;
-                        label.setText(onLabel);
+                        displayErr();
                         return;
                     }
                     count = division(count, temp);
@@ -151,8 +150,7 @@ public class CalculatorController {
                 case 'n' ->  {
                     if (count.doubleValue() <= 0) {
                         System.err.println("can't extract power");
-                        onLabel = errorString;
-                        label.setText(onLabel);
+                        displayErr();
                         return;
                     }
                     count = exponentiation(count, temp);
@@ -160,8 +158,7 @@ public class CalculatorController {
                 case 'm' -> {
                     if (temp.doubleValue() == 0.0 || !String.valueOf(temp.doubleValue()).endsWith(".0") || count.doubleValue() < 0.0) {
                         System.err.println("can't extract root");
-                        onLabel = errorString;
-                        label.setText(onLabel);
+                        displayErr();
                         return;
                     }
                     count = rootExtraction(count, temp);
@@ -169,8 +166,7 @@ public class CalculatorController {
                 case 'l' -> {
                     if (temp.doubleValue() == 1.0 || temp.doubleValue() <= 0.0 || count.doubleValue() < 0.0) {
                         System.err.println("can't perform this log");
-                        onLabel = errorString;
-                        label.setText(onLabel);
+                        displayErr();
                         return;
                     }
                     count = logBaseN(count, temp);
@@ -237,8 +233,7 @@ public class CalculatorController {
                 case '/' ->  {
                     if (temp.doubleValue() == 0.0) {
                         System.err.println("can't divide by 0");
-                        onLabel = errorString;
-                        label.setText(onLabel);
+                        displayErr();
                         return;
                     }
                     count = division(count, temp);
@@ -246,8 +241,7 @@ public class CalculatorController {
                 case 'n' ->  {
                     if (count.doubleValue() <= 0) {
                         System.err.println("can't extract power");
-                        onLabel = errorString;
-                        label.setText(onLabel);
+                        displayErr();
                         return;
                     }
                     count = exponentiation(count, temp);
@@ -255,8 +249,7 @@ public class CalculatorController {
                 case 'm' -> {
                     if (temp.doubleValue() == 0.0 || !String.valueOf(temp.doubleValue()).endsWith(".0") || count.doubleValue() < 0.0) {
                         System.err.println("can't extract root");
-                        onLabel = errorString;
-                        label.setText(onLabel);
+                        displayErr();
                         return;
                     }
                     count = rootExtraction(count, temp);
@@ -264,8 +257,7 @@ public class CalculatorController {
                 case 'l' -> {
                     if (temp.doubleValue() == 1.0 || temp.doubleValue() <= 0.0 || count.doubleValue() < 0.0) {
                         System.err.println("can't perform this log");
-                        onLabel = errorString;
-                        label.setText(onLabel);
+                        displayErr();
                         return;
                     }
                     count = logBaseN(count, temp);
@@ -393,7 +385,7 @@ public class CalculatorController {
         //multiply the value on label by -1 to change its sign and strip trailing 0s from it
         BigDecimal value = new BigDecimal(onLabel);
         value = value.multiply(new BigDecimal("-1"));
-        value = value.stripTrailingZeros();
+        value = stripDecimalTrailingZeros(value);
 
         //checking it's not too big, update builder, display it
         onLabel = String.valueOf(value);
@@ -596,7 +588,20 @@ public class CalculatorController {
             throw new IllegalArgumentException();
         int leftDigits = d.toString().substring(0, d.toString().indexOf('.')).length();
         d = d.setScale(maxDigits - leftDigits - 2, RoundingMode.HALF_UP);
+        d = stripDecimalTrailingZeros(d);
+        return d;
+    }
+
+    /**
+     * BigDecimal.stripTrailingZeros removes not only the 0s that are decimal
+     * but also the 0s in the integer part of the number
+     * example: 100 would be 1e+2 where the scale is negative
+     * to avoid this set the scale 0 so no scientific notation happens
+     */
+    private BigDecimal stripDecimalTrailingZeros(BigDecimal d) {
         d = d.stripTrailingZeros();
+        if (d.scale() < 0)
+            d = d.setScale(0, RoundingMode.HALF_UP);
         return d;
     }
 
@@ -606,7 +611,7 @@ public class CalculatorController {
      * and return
      */
     private void displayErr() {
-        onLabel = "err";
+        onLabel = errorString;
         label.setText(onLabel);
     }
 
@@ -622,7 +627,7 @@ public class CalculatorController {
      */
     private BigDecimal addition(BigDecimal a, BigDecimal b) {
         a = a.add(b);
-        a = a.stripTrailingZeros();
+        a = stripDecimalTrailingZeros(a);
         System.out.println("result: " + a);
         return a;
     }
@@ -632,7 +637,7 @@ public class CalculatorController {
      */
     private BigDecimal subtraction(BigDecimal a, BigDecimal b) {
         a = a.subtract(b);
-        a = a.stripTrailingZeros();
+        a = stripDecimalTrailingZeros(a);
         System.out.println("result: " + a);
         return a;
     }
