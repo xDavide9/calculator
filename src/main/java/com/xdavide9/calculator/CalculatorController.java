@@ -646,7 +646,6 @@ public class CalculatorController {
      * updates a with the product of a and b
      */
     private BigDecimal multiplication(BigDecimal a, BigDecimal b) {
-        a = a.setScale(15, RoundingMode.HALF_UP);
         a = a.multiply(b);
         if (a.toString().contains("."))
             a = round(a);
