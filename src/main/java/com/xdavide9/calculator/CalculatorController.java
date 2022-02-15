@@ -661,6 +661,10 @@ public class CalculatorController {
         a = a.divide(b, RoundingMode.HALF_UP);
         if (a.toString().contains("."))
             a = round(a);
+        //dividing 0 by something is a special case that keeps the scale of 15 because
+        //it does not contain a point so round is not run on it
+        if (a.toString().contains("E") && a.toString().contains("0"))
+            a = new BigDecimal("0");
         System.out.println("result: " + a);
         return a;
     }
