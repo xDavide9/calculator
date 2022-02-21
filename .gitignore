@@ -3,3 +3,4 @@ pom.xml
 .idea/
 target/
 src/main/java/module-info.java
+src/main/resources/com/xdavide9/calculator/icon.png
