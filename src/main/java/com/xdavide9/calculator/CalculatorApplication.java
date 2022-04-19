@@ -16,6 +16,7 @@ public class CalculatorApplication extends Application {
         System.setProperty("prism.lcdtext", "false");
         FXMLLoader fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorSimple.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+
         //stylesheet
         try {
             scene.getStylesheets().add(Objects.requireNonNull(CalculatorApplication.class.getResource("darcula.css")).toExternalForm());
@@ -23,6 +24,7 @@ public class CalculatorApplication extends Application {
             e.printStackTrace();
             System.err.println("Could not set stylesheet");
         }
+
         //icon
         try {
             String path = Objects.requireNonNull(CalculatorApplication.class.getResource("icon.png")).toExternalForm();
