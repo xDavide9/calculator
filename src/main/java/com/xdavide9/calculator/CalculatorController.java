@@ -8,12 +8,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+@Slf4j
 public class CalculatorController {
 
     @FXML
@@ -36,13 +39,63 @@ public class CalculatorController {
     private static final String errorString = "err";
 
     /**
+     * Currently performed operations:
+     * Addition,
+     * Subtraction,
+     * Multiplication,
+     * Division,
+     * Exponentiation of N power,
+     * Root Extraction of N index,
+     * Logarithm of N base.
+     */
+    private void performOperation() {
+        switch (operation) {
+            case '+' -> count = addition(count, temp);
+            case '-' -> count = subtraction(count, temp);
+            case '*' -> count = multiplication(count, temp);
+            case '/' ->  {
+                if (temp.doubleValue() == 0.0) {
+                    log.error("Cannot divide by 0");
+                    displayErr();
+                    return;
+                }
+                count = division(count, temp);
+            }
+            case 'p' ->  {
+                if (count.doubleValue() <= 0) {
+                    log.error("Cannot raise power of a negative number");
+                    displayErr();
+                    return;
+                }
+                count = exponentiation(count, temp);
+            }
+            case 'r' -> {
+                if (temp.doubleValue() == 0.0 || !String.valueOf(temp.doubleValue()).endsWith(".0") || count.doubleValue() < 0.0) {
+                    log.error("Cannot extract root of index 0");
+                    displayErr();
+                    return;
+                }
+                count = rootExtraction(count, temp);
+            }
+            case 'l' -> {
+                if (temp.doubleValue() == 1.0 || temp.doubleValue() <= 0.0 || count.doubleValue() < 0.0) {
+                    log.error("invalid argument or base for this logarithm");
+                    displayErr();
+                    return;
+                }
+                count = logBaseN(count, temp);
+            }
+        }
+    }
+
+    /**
      * Appends to the label the number of the corresponding button
      * respecting the limit of maximum digits allowed.
      */
     @FXML
     protected void OnNumberPressed(ActionEvent e) {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -53,7 +106,7 @@ public class CalculatorController {
         switch (id) {
             case "zeroButton" ->  {
                 if (onLabel.startsWith("0") && (!onLabel.contains("."))) {
-                    System.err.println("Can't append 0");
+                    log.error("Cannot append 0");
                     return;
                 }
                 builder.append(0);
@@ -67,13 +120,19 @@ public class CalculatorController {
             case "sevenButton" -> builder.append(7);
             case "eightButton" -> builder.append(8);
             case "nineButton" -> builder.append(9);
-            case "piButton" -> builder.append(round(BigDecimal.valueOf(Math.PI)));
-            case "eButton" -> builder.append(round(BigDecimal.valueOf(Math.E)));
+            case "piButton" -> {
+                builder = new StringBuilder();
+                builder.append(round(BigDecimal.valueOf(Math.PI)));
+            }
+            case "eButton" -> {
+                builder = new StringBuilder();
+                builder.append(round(BigDecimal.valueOf(Math.E)));
+            }
         }
 
         onLabel = builder.toString();
         if (hasTooManyDigits(onLabel.length())) {
-            System.err.println("Too many digits");
+            log.error("Maximum limit of digits reached");
             onLabel = onLabel.substring(0, maxDigits);
         }
 
@@ -85,19 +144,11 @@ public class CalculatorController {
      * stores the number in the label either in count or temp,
      * performs an operation if it was stored in memory and
      * stores the operation to be performed next.
-     * Currently performed operations:
-     * Addition,
-     * Subtraction,
-     * Multiplication,
-     * Division,
-     * Exponentiation of N power,
-     * Root Extraction of N index,
-     * Logarithm of N base.
      */
     @FXML
     protected void onMemoryOperationPressed(ActionEvent e) {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -116,53 +167,17 @@ public class CalculatorController {
         builder = new StringBuilder();
 
         if (hasTemp && operation != 0) {
-            switch (operation) {
-                case '+' -> count = addition(count, temp);
-                case '-' -> count = subtraction(count, temp);
-                case '*' -> count = multiplication(count, temp);
-                case '/' ->  {
-                    if (temp.doubleValue() == 0.0) {
-                        System.err.println("Can't divide by 0");
-                        displayErr();
-                        return;
-                    }
-                    count = division(count, temp);
-                }
-                case 'n' ->  {
-                    if (count.doubleValue() <= 0) {
-                        System.err.println("Can't extract power");
-                        displayErr();
-                        return;
-                    }
-                    count = exponentiation(count, temp);
-                }
-                case 'm' -> {
-                    if (temp.doubleValue() == 0.0 || !String.valueOf(temp.doubleValue()).endsWith(".0") || count.doubleValue() < 0.0) {
-                        System.err.println("Can't extract root");
-                        displayErr();
-                        return;
-                    }
-                    count = rootExtraction(count, temp);
-                }
-                case 'l' -> {
-                    if (temp.doubleValue() == 1.0 || temp.doubleValue() <= 0.0 || count.doubleValue() < 0.0) {
-                        System.err.println("Can't perform this log");
-                        displayErr();
-                        return;
-                    }
-                    count = logBaseN(count, temp);
-                }
-            }
+            performOperation();
             hasTemp = false;
             temp = new BigDecimal("0");
         } else {
-            System.err.println("No temp in memory");
+            log.info("No temp to perform the operation with in memory");
         }
 
         onLabel = count.toString();
 
         if (hasTooManyDigits(onLabel.length())) {
-            System.err.println("Too many digits");
+            log.error("Result had too many digits");
             displayErr();
             return;
         }
@@ -174,8 +189,8 @@ public class CalculatorController {
             case "minusButton" -> operation = '-';
             case "timesButton" -> operation = '*';
             case "divideButton" -> operation = '/';
-            case "toThePowerOfNButton" -> operation = 'n';
-            case "radicalNButton" -> operation = 'm';
+            case "toThePowerOfNButton" -> operation = 'p';
+            case "radicalNButton" -> operation = 'r';
             case "logBaseNButton" -> operation = 'l';
         }
     }
@@ -187,53 +202,15 @@ public class CalculatorController {
     @FXML
     protected void onEqualsPressed(ActionEvent e) {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
 
         if (operation != 0) {
             if (label.getText().equals("")) return;
-
             temp = new BigDecimal(label.getText());
-
-            switch (operation) {
-                case '+' -> count = addition(count, temp);
-                case '-' -> count = subtraction(count, temp);
-                case '*' -> count = multiplication(count, temp);
-                case '/' ->  {
-                    if (temp.doubleValue() == 0.0) {
-                        System.err.println("Can't divide by 0");
-                        displayErr();
-                        return;
-                    }
-                    count = division(count, temp);
-                }
-                case 'n' ->  {
-                    if (count.doubleValue() <= 0) {
-                        System.err.println("Can't extract power");
-                        displayErr();
-                        return;
-                    }
-                    count = exponentiation(count, temp);
-                }
-                case 'm' -> {
-                    if (temp.doubleValue() == 0.0 || !String.valueOf(temp.doubleValue()).endsWith(".0") || count.doubleValue() < 0.0) {
-                        System.err.println("Can't extract root");
-                        displayErr();
-                        return;
-                    }
-                    count = rootExtraction(count, temp);
-                }
-                case 'l' -> {
-                    if (temp.doubleValue() == 1.0 || temp.doubleValue() <= 0.0 || count.doubleValue() < 0.0) {
-                        System.err.println("Can't perform this log");
-                        displayErr();
-                        return;
-                    }
-                    count = logBaseN(count, temp);
-                }
-            }
+            performOperation();
             operation = 0;
             temp = new BigDecimal("0");
             hasTemp = false;
@@ -245,7 +222,7 @@ public class CalculatorController {
 
         onLabel = String.valueOf(count);
         if (hasTooManyDigits(onLabel.length())) {
-            System.out.println("Too many digits");
+            log.error("Result had too many digits");
             displayErr();
             return;
         }
@@ -263,7 +240,7 @@ public class CalculatorController {
     @FXML
     protected void onPointPressed(ActionEvent e) {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -284,7 +261,7 @@ public class CalculatorController {
     @FXML
     protected void onDelPressed(ActionEvent e) {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -306,7 +283,7 @@ public class CalculatorController {
     @FXML
     protected void onAcPressed(ActionEvent e) {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         setDefaults();
     }
@@ -317,7 +294,7 @@ public class CalculatorController {
     @FXML
     protected void onPlusMinusPressed(ActionEvent e) {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -334,7 +311,7 @@ public class CalculatorController {
         builder.append(onLabel);
 
         if (hasTooManyDigits(onLabel.length())) {
-            System.err.println("Too many digits");
+            log.error("Result had too many digits");
             displayErr();
             return;
         }
@@ -349,7 +326,7 @@ public class CalculatorController {
     @FXML
     protected void onFnPressed(ActionEvent e) throws IOException {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -398,7 +375,7 @@ public class CalculatorController {
     @FXML
     protected void onInstantOperationPressed(ActionEvent e) {
         id = updateId(e);
-        System.out.println("Pressed: " + id);
+        log.info("Pressed: {}", id);
 
         //error checking
         onLabel = label.getText();
@@ -410,7 +387,7 @@ public class CalculatorController {
             case "toThePowerOfTwoButton" -> value = value.pow(2);
             case "radicalTwoButton" ->  {
                 if (value.doubleValue() < 0.0) {
-                    System.err.println("Can't extract square root of a negative number");
+                    log.error("Cannot extract square root of a negative number");
                     displayErr();
                     return;
                 }
@@ -418,7 +395,7 @@ public class CalculatorController {
             }
             case "percentButton" ->  {
                 if (value.doubleValue() < 0.0) {
-                    System.err.println("Can't calculate percentage off a negative number");
+                    log.error("Cannot calculate percentage off a negative number");
                     displayErr();
                     return;
                 }
@@ -426,7 +403,7 @@ public class CalculatorController {
             }
             case "logButton" ->  {
                 if (value.doubleValue() <= 0.0 || value.doubleValue() == 1.0) {
-                    System.err.println("Can't log a negative number or 0 or 1");
+                    log.error("invalid argument for this logarithm");
                     displayErr();
                     return;
                 }
@@ -434,7 +411,7 @@ public class CalculatorController {
             }
             case "lnButton" ->  {
                 if (value.doubleValue() <= 0.0 || value.doubleValue() == 1.0) {
-                    System.err.println("Can't ln a negative number or 0 or 1");
+                    log.error("invalid argument for this logarithm");
                     displayErr();
                     return;
                 }
@@ -445,7 +422,7 @@ public class CalculatorController {
             case "tanButton" -> value = BigDecimal.valueOf(Math.tan(value.doubleValue()));
             case "asinButton" -> {
                 if (value.doubleValue() < -1.0 || value.doubleValue() > 1.0) {
-                    System.err.println("Out of asin domain");
+                    log.error("Out of arc-sine domain");
                     displayErr();
                     return;
                 }
@@ -453,7 +430,7 @@ public class CalculatorController {
             }
             case "acosButton" -> {
                 if (value.doubleValue() < -1.0 || value.doubleValue() > 1.0) {
-                    System.err.println("Out of acos domain");
+                    log.error("Out of arc-cosine domain");
                     displayErr();
                     return;
                 }
@@ -463,7 +440,7 @@ public class CalculatorController {
             case "radicalThreeButton" -> value = BigDecimal.valueOf(Math.cbrt(value.doubleValue()));
             case "reciprocalButton" -> {
                 if (value.doubleValue() == 0.0) {
-                    System.err.println("Reciprocal of 0 does not exist");
+                    log.error("Reciprocal of 0 does not exist");
                     displayErr();
                     return;
                 }
@@ -471,7 +448,7 @@ public class CalculatorController {
             }
             case "factorialButton" -> {
                 if (value.toString().contains(".") || value.doubleValue() < 0.0) {
-                    System.err.println("Factorial must be a positive integer");
+                    log.error("Factorial must a be a positive integer");
                     displayErr();
                     return;
                 }
@@ -485,7 +462,7 @@ public class CalculatorController {
 
         onLabel = String.valueOf(value);
         if (hasTooManyDigits(onLabel.length())) {
-            System.err.println("too big");
+            log.error("Result had too many digits");
             displayErr();
             return;
         }
@@ -514,7 +491,7 @@ public class CalculatorController {
      */
     private int status(String onLabel) {
         if (onLabel.equals("err")) {
-            System.err.println("resetting");
+            log.warn("Resetting all fields to default");
             setDefaults();
             return -1;
         }
@@ -580,7 +557,7 @@ public class CalculatorController {
     private BigDecimal addition(BigDecimal a, BigDecimal b) {
         a = a.add(b);
         a = stripDecimalTrailingZeros(a);
-        System.out.println("Result: " + a);
+        log.info("Result = {}", a);
         return a;
     }
 
@@ -591,7 +568,7 @@ public class CalculatorController {
     private BigDecimal subtraction(BigDecimal a, BigDecimal b) {
         a = a.subtract(b);
         a = stripDecimalTrailingZeros(a);
-        System.out.println("Result: " + a);
+        log.info("Result = {}", a);
         return a;
     }
 
@@ -603,7 +580,7 @@ public class CalculatorController {
         a = a.multiply(b);
         if (a.toString().contains("."))
             a = round(a);
-        System.out.println("Result: " + a);
+        log.info("Result = {}", a);
         return a;
     }
 
@@ -620,7 +597,7 @@ public class CalculatorController {
         //it does not contain a point so round is not run on it
         if (a.toString().contains("E") && a.toString().contains("0"))
             a = new BigDecimal("0");
-        System.out.println("Result: " + a);
+        log.info("Result = {}", a);
         return a;
     }
 
@@ -646,7 +623,7 @@ public class CalculatorController {
         a = BigDecimal.valueOf(Math.pow(a.doubleValue(), 1 / b.doubleValue()));
         if (a.toString().contains("."))
             a = round(a);
-        System.out.println("Result: " + a);
+        log.info("Result = {}", a);
         return a;
     }
 
@@ -659,7 +636,7 @@ public class CalculatorController {
         a = BigDecimal.valueOf(Math.log(a.doubleValue()) / Math.log(b.doubleValue()));
         if (a.toString().contains("."))
             a = round(a);
-        System.out.println("Result: " + a);
+        log.info("Result = {}", a);
         return a;
     }
 
