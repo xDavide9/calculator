@@ -13,7 +13,7 @@ Has plently of useful and complex functions but should not be considered scienti
 
 <hr>
 
-![pic](./screenshots/1.png)
+![pic](readmepics/1.png)
 
 ### Guide
 
@@ -24,7 +24,7 @@ Input a _number_ -> press [`+`, `-`, `*`, `/`] -> the number now vanishes -> inp
 
 Press `FN` -> more functions that either modify the number on screen or need another number as input to finish the operation
 
-![pic](./screenshots/2.png)
+![pic](readmepics/2.png)
 
 <a href="https://github.com/mouse0w0/darculafx">Stylesheet credits</a>
 

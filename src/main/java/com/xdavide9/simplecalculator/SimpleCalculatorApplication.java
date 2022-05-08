@@ -1,4 +1,4 @@
-package com.xdavide9.calculator;
+package com.xdavide9.simplecalculator;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,18 +11,18 @@ import java.io.IOException;
 import java.util.Objects;
 
 @Slf4j
-public class CalculatorApplication extends Application {
+public class SimpleCalculatorApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
         // this property makes sure grayscale AA is used to make the edges of text look smoother
         System.setProperty("prism.lcdtext", "false");
-        FXMLLoader fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorSimple.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(SimpleCalculatorApplication.class.getResource("calculatorSimple.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         // stylesheet
         try {
-            scene.getStylesheets().add(Objects.requireNonNull(CalculatorApplication.class.getResource("darcula.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(SimpleCalculatorApplication.class.getResource("darcula.css")).toExternalForm());
             log.info("Successfully set up stylesheet");
         } catch (NullPointerException e) {
             log.error("Could not set up stylesheet", e);
@@ -30,7 +30,7 @@ public class CalculatorApplication extends Application {
 
         // icon
         try {
-            String path = Objects.requireNonNull(CalculatorApplication.class.getResource("icon.png")).toExternalForm();
+            String path = Objects.requireNonNull(SimpleCalculatorApplication.class.getResource("icon.png")).toExternalForm();
             stage.getIcons().add(new Image(path));
             log.info("Successfully set up icon");
         } catch (NullPointerException e) {

@@ -1,4 +1,4 @@
-package com.xdavide9.calculator;
+package com.xdavide9.simplecalculator;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +17,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 @Slf4j
-public class CalculatorController {
+public class SimpleCalculatorController {
 
     @FXML
     private Label label;
@@ -336,16 +336,16 @@ public class CalculatorController {
 
         if (isOnSimple) {
             isOnSimple = false;
-            fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorComplex.fxml"));
+            fxmlLoader = new FXMLLoader(SimpleCalculatorApplication.class.getResource("calculatorComplex.fxml"));
         } else {
             isOnSimple = true;
-            fxmlLoader = new FXMLLoader(CalculatorApplication.class.getResource("calculatorSimple.fxml"));
+            fxmlLoader = new FXMLLoader(SimpleCalculatorApplication.class.getResource("calculatorSimple.fxml"));
         }
 
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(Objects.requireNonNull(CalculatorApplication.class.getResource("darcula.css")).toExternalForm());
-        CalculatorController controller = fxmlLoader.getController();
+        scene.getStylesheets().add(Objects.requireNonNull(SimpleCalculatorApplication.class.getResource("darcula.css")).toExternalForm());
+        SimpleCalculatorController controller = fxmlLoader.getController();
         //injecting the label's text through the controller each time you switch scene because it cannot be made static
         controller.label.setText(onLabel);
         //injecting focus on the fn button to prevent an annoying effect otherwise occurring
