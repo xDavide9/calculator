@@ -1,6 +1,6 @@
 # CalculatorFX
 
-Great to perform calculation in your favourite darcula theme
+Not scientific but still great to perform almost any calculation in a dark theme
 
 <hr>
 
@@ -14,11 +14,11 @@ Great to perform calculation in your favourite darcula theme
 
 ### User Guide
 
-Input a _number_ -> press `+`, `-`, `*`, `/` -> the number now vanishes -> input another _number_ -> either press [`=`] to display the result or continue to chain operations.
+Input a _number_ -> press `+`, `-`, `*`, `/` -> the number now vanishes -> input another _number_ -> either press [`=`] to display the result or continue to chain operations
 
 <hr>
 
-Press `FN` -> more functions that either modify the number on screen or need another number as input to finish the operation
+Press `FN` ->  switch from simple to more complex functions and vice versa
 
 ![pic](readmepics/2.png)
 
