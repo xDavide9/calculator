@@ -1,24 +1,20 @@
-# dark-themed calculator
+# CalculatorFX
 
-Has plently of useful and complex functions but should not be considered scientific
+Great to perform calculation in your favourite darcula theme
 
 <hr>
 
 ### Features
 
-- modern look
-- vanish effect
-- lots of useful functions
-- built with javafx
-
-<hr>
+- Modern look with a vanishing effect
+- Lots of operation ranging from simple to complex ones
+- Built with JavaFX using fxml and the Scene Builder
 
 ![pic](readmepics/1.png)
 
-### Guide
+### User Guide
 
-Input a _number_ -> press [`+`, `-`, `*`, `/`] -> the number now vanishes -> input another _number_ -> either press [`=`] to display the result or continue to chain operations.
-
+Input a _number_ -> press `+`, `-`, `*`, `/` -> the number now vanishes -> input another _number_ -> either press [`=`] to display the result or continue to chain operations.
 
 <hr>
 
