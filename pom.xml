@@ -5,13 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.xdavide9</groupId>
-    <artifactId>SimpleCalculator</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>SimpleCalculator</name>
+    <artifactId>CalculatorFX</artifactId>
+    <version>1.1</version>
+    <name>CalculatorFX</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.8.2</junit.version>
     </properties>
 
     <dependencies>
@@ -60,11 +59,10 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.xdavide9.simplecaulculator/com.xdavide9.simplecalculator.HelloApplication
-                            </mainClass>
-                            <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
+                            <mainClass>com.xdavide9.calculatorfx.CalculatorFXApplication</mainClass>
+                            <launcher>calculatorfx</launcher>
+                            <jlinkZipName>calculatorfx</jlinkZipName>
+                            <jlinkImageName>calculatorfx</jlinkImageName>
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>

@@ -4,6 +4,6 @@ module com.xdavide9.simplecaulculator {
     requires lombok;
     requires org.slf4j;
 
-    opens com.xdavide9.simplecalculator to javafx.fxml;
-    exports com.xdavide9.simplecalculator;
+    opens com.xdavide9.calculatorfx to javafx.fxml;
+    exports com.xdavide9.calculatorfx;
 }
