@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,7 +15,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-@Slf4j
+
 public class CalculatorFXController {
 
     @FXML
@@ -55,7 +54,7 @@ public class CalculatorFXController {
             case '*' -> count = multiplication(count, temp);
             case '/' ->  {
                 if (temp.doubleValue() == 0.0) {
-                    log.error("Cannot divide by 0");
+                    System.out.println("Cannot divide by 0");
                     displayErr();
                     return;
                 }
@@ -63,7 +62,7 @@ public class CalculatorFXController {
             }
             case 'p' ->  {
                 if (count.doubleValue() <= 0) {
-                    log.error("Cannot raise power of a negative number");
+                    System.out.println("Cannot raise power of a negative number");
                     displayErr();
                     return;
                 }
@@ -71,7 +70,7 @@ public class CalculatorFXController {
             }
             case 'r' -> {
                 if (temp.doubleValue() == 0.0 || !String.valueOf(temp.doubleValue()).endsWith(".0") || count.doubleValue() < 0.0) {
-                    log.error("Cannot extract root of index 0");
+                    System.out.println("Cannot extract root of index 0");
                     displayErr();
                     return;
                 }
@@ -79,7 +78,7 @@ public class CalculatorFXController {
             }
             case 'l' -> {
                 if (temp.doubleValue() == 1.0 || temp.doubleValue() <= 0.0 || count.doubleValue() < 0.0) {
-                    log.error("invalid argument or base for this logarithm");
+                    System.out.println("invalid argument or base for this logarithm");
                     displayErr();
                     return;
                 }
@@ -95,7 +94,7 @@ public class CalculatorFXController {
     @FXML
     protected void OnNumberPressed(ActionEvent e) {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -106,7 +105,7 @@ public class CalculatorFXController {
         switch (id) {
             case "zeroButton" ->  {
                 if (onLabel.startsWith("0") && (!onLabel.contains("."))) {
-                    log.error("Cannot append 0");
+                    System.out.println("Cannot append 0");
                     return;
                 }
                 builder.append(0);
@@ -132,7 +131,7 @@ public class CalculatorFXController {
 
         onLabel = builder.toString();
         if (hasTooManyDigits(onLabel.length())) {
-            log.error("Maximum limit of digits reached");
+            System.out.println("Maximum limit of digits reached");
             onLabel = onLabel.substring(0, maxDigits);
         }
 
@@ -148,7 +147,7 @@ public class CalculatorFXController {
     @FXML
     protected void onMemoryOperationPressed(ActionEvent e) {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -171,13 +170,13 @@ public class CalculatorFXController {
             hasTemp = false;
             temp = new BigDecimal("0");
         } else {
-            log.info("No temp to perform the operation with in memory");
+            System.out.println("No temp to perform the operation with in memory");
         }
 
         onLabel = count.toString();
 
         if (hasTooManyDigits(onLabel.length())) {
-            log.error("Result had too many digits");
+            System.out.println("Result had too many digits");
             displayErr();
             return;
         }
@@ -202,7 +201,7 @@ public class CalculatorFXController {
     @FXML
     protected void onEqualsPressed(ActionEvent e) {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -222,7 +221,7 @@ public class CalculatorFXController {
 
         onLabel = String.valueOf(count);
         if (hasTooManyDigits(onLabel.length())) {
-            log.error("Result had too many digits");
+            System.out.println("Result had too many digits");
             displayErr();
             return;
         }
@@ -240,7 +239,7 @@ public class CalculatorFXController {
     @FXML
     protected void onPointPressed(ActionEvent e) {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -261,7 +260,7 @@ public class CalculatorFXController {
     @FXML
     protected void onDelPressed(ActionEvent e) {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -283,7 +282,7 @@ public class CalculatorFXController {
     @FXML
     protected void onAcPressed(ActionEvent e) {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         setDefaults();
     }
@@ -294,7 +293,7 @@ public class CalculatorFXController {
     @FXML
     protected void onPlusMinusPressed(ActionEvent e) {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -311,7 +310,7 @@ public class CalculatorFXController {
         builder.append(onLabel);
 
         if (hasTooManyDigits(onLabel.length())) {
-            log.error("Result had too many digits");
+            System.out.println("Result had too many digits");
             displayErr();
             return;
         }
@@ -326,7 +325,7 @@ public class CalculatorFXController {
     @FXML
     protected void onFnPressed(ActionEvent e) throws IOException {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         onLabel = label.getText();
         if (status(onLabel) == -1) return;
@@ -375,7 +374,7 @@ public class CalculatorFXController {
     @FXML
     protected void onInstantOperationPressed(ActionEvent e) {
         id = updateId(e);
-        log.info("Pressed: {}", id);
+        System.out.println("Pressed: " + id);
 
         //error checking
         onLabel = label.getText();
@@ -387,7 +386,7 @@ public class CalculatorFXController {
             case "toThePowerOfTwoButton" -> value = value.pow(2);
             case "radicalTwoButton" ->  {
                 if (value.doubleValue() < 0.0) {
-                    log.error("Cannot extract square root of a negative number");
+                    System.out.println("Cannot extract square root of a negative number");
                     displayErr();
                     return;
                 }
@@ -395,7 +394,7 @@ public class CalculatorFXController {
             }
             case "percentButton" ->  {
                 if (value.doubleValue() < 0.0) {
-                    log.error("Cannot calculate percentage off a negative number");
+                    System.out.println("Cannot calculate percentage off a negative number");
                     displayErr();
                     return;
                 }
@@ -403,7 +402,7 @@ public class CalculatorFXController {
             }
             case "logButton" ->  {
                 if (value.doubleValue() <= 0.0 || value.doubleValue() == 1.0) {
-                    log.error("invalid argument for this logarithm");
+                    System.out.println("invalid argument for this logarithm");
                     displayErr();
                     return;
                 }
@@ -411,7 +410,7 @@ public class CalculatorFXController {
             }
             case "lnButton" ->  {
                 if (value.doubleValue() <= 0.0 || value.doubleValue() == 1.0) {
-                    log.error("invalid argument for this logarithm");
+                    System.out.println("invalid argument for this logarithm");
                     displayErr();
                     return;
                 }
@@ -422,7 +421,7 @@ public class CalculatorFXController {
             case "tanButton" -> value = BigDecimal.valueOf(Math.tan(value.doubleValue()));
             case "asinButton" -> {
                 if (value.doubleValue() < -1.0 || value.doubleValue() > 1.0) {
-                    log.error("Out of arc-sine domain");
+                    System.out.println("Out of arc-sine domain");
                     displayErr();
                     return;
                 }
@@ -430,7 +429,7 @@ public class CalculatorFXController {
             }
             case "acosButton" -> {
                 if (value.doubleValue() < -1.0 || value.doubleValue() > 1.0) {
-                    log.error("Out of arc-cosine domain");
+                    System.out.println("Out of arc-cosine domain");
                     displayErr();
                     return;
                 }
@@ -440,7 +439,7 @@ public class CalculatorFXController {
             case "radicalThreeButton" -> value = BigDecimal.valueOf(Math.cbrt(value.doubleValue()));
             case "reciprocalButton" -> {
                 if (value.doubleValue() == 0.0) {
-                    log.error("Reciprocal of 0 does not exist");
+                    System.out.println("Reciprocal of 0 does not exist");
                     displayErr();
                     return;
                 }
@@ -448,7 +447,7 @@ public class CalculatorFXController {
             }
             case "factorialButton" -> {
                 if (value.toString().contains(".") || value.doubleValue() < 0.0) {
-                    log.error("Factorial must a be a positive integer");
+                    System.out.println("Factorial must a be a positive integer");
                     displayErr();
                     return;
                 }
@@ -462,7 +461,7 @@ public class CalculatorFXController {
 
         onLabel = String.valueOf(value);
         if (hasTooManyDigits(onLabel.length())) {
-            log.error("Result had too many digits");
+            System.out.println("Result had too many digits");
             displayErr();
             return;
         }
@@ -491,7 +490,7 @@ public class CalculatorFXController {
      */
     private int status(String onLabel) {
         if (onLabel.equals("err")) {
-            log.warn("Resetting all fields to default");
+            System.out.println("Resetting all fields to default");
             setDefaults();
             return -1;
         }
@@ -557,7 +556,7 @@ public class CalculatorFXController {
     private BigDecimal addition(BigDecimal a, BigDecimal b) {
         a = a.add(b);
         a = stripDecimalTrailingZeros(a);
-        log.info("Result = {}", a);
+        System.out.println("Result = " + a);
         return a;
     }
 
@@ -568,7 +567,7 @@ public class CalculatorFXController {
     private BigDecimal subtraction(BigDecimal a, BigDecimal b) {
         a = a.subtract(b);
         a = stripDecimalTrailingZeros(a);
-        log.info("Result = {}", a);
+        System.out.println("Result = " + a);
         return a;
     }
 
@@ -580,7 +579,7 @@ public class CalculatorFXController {
         a = a.multiply(b);
         if (a.toString().contains("."))
             a = round(a);
-        log.info("Result = {}", a);
+        System.out.println("Result = " + a);
         return a;
     }
 
@@ -597,7 +596,7 @@ public class CalculatorFXController {
         //it does not contain a point so round is not run on it
         if (a.toString().contains("E") && a.toString().contains("0"))
             a = new BigDecimal("0");
-        log.info("Result = {}", a);
+        System.out.println("Result = " + a);
         return a;
     }
 
@@ -610,7 +609,7 @@ public class CalculatorFXController {
         a = BigDecimal.valueOf(Math.pow(a.doubleValue(), b.doubleValue()));
         if (a.toString().contains("."))
             a = round(a);
-        System.out.println("Result: " + a);
+        System.out.println("Result = " + a);
         return a;
     }
 
@@ -623,7 +622,7 @@ public class CalculatorFXController {
         a = BigDecimal.valueOf(Math.pow(a.doubleValue(), 1 / b.doubleValue()));
         if (a.toString().contains("."))
             a = round(a);
-        log.info("Result = {}", a);
+        System.out.println("Result = " + a);
         return a;
     }
 
@@ -636,7 +635,7 @@ public class CalculatorFXController {
         a = BigDecimal.valueOf(Math.log(a.doubleValue()) / Math.log(b.doubleValue()));
         if (a.toString().contains("."))
             a = round(a);
-        log.info("Result = {}", a);
+        System.out.println("Result = " + a);
         return a;
     }
 

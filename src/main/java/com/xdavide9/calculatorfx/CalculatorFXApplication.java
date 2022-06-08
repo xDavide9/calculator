@@ -5,12 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Objects;
 
-@Slf4j
 public class CalculatorFXApplication extends Application {
 
     @Override
@@ -22,17 +20,17 @@ public class CalculatorFXApplication extends Application {
 
         try {
             scene.getStylesheets().add(Objects.requireNonNull(CalculatorFXApplication.class.getResource("darcula.css")).toExternalForm());
-            log.info("Successfully set up stylesheet");
+            System.out.println("Successfully set up stylesheet");
         } catch (NullPointerException e) {
-            log.error("Could not set up stylesheet", e);
+            System.out.println("Could not set up stylesheet");
         }
 
         try {
             String path = Objects.requireNonNull(CalculatorFXApplication.class.getResource("icon.png")).toExternalForm();
             stage.getIcons().add(new Image(path));
-            log.info("Successfully set up icon");
+            System.out.println("Successfully set up icon");
         } catch (NullPointerException e) {
-            log.error("Could not set up icon", e);
+            System.out.println("Could not set up icon");
         }
 
         stage.setTitle("CalculatorFX");
