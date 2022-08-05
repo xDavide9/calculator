@@ -1,4 +1,4 @@
-module com.xdavide9.simplecaulculator {
+module com.xdavide9.calculatorfx {
     requires javafx.controls;
     requires javafx.fxml;
 
