@@ -2,13 +2,14 @@
 
 [![author](https://img.shields.io/badge/author-xDavide9-brightgreen)](https://github.com/xDavide9)
 [![license](https://img.shields.io/github/license/xDavide9/CalculatorFX?color=red)](https://github.com/xDavide9/CalculatorFX)
-[![version](https://img.shields.io/github/v/release/xDavide9/CalculatorFX?color=blue)](https://github.com/xDavide9/CalculatorFX/releases)
+[![java version](https://img.shields.io/badge/Java-17-blue)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+[![version](https://img.shields.io/github/v/release/xDavide9/CalculatorFX?color=orange)](https://github.com/xDavide9/CalculatorFX/releases)
 
 > Not a scientific Calculator but still able to perform lots of functions
 
 ### Installation
 
-- Download the archive from the latest version, extract its contents and look for executables such as `calculatorfx.exe` under the `bin` directory
+- Download the installer from the [latest release](https://github.com/xDavide9/CalculatorFX/releases) and run it
 - No need to have _Java_ installed on your machine
 ### Features
 
