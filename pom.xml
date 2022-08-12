@@ -71,5 +71,19 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <!--
+                    To deploy a new version:
+
+                    1) mvnw clean install
+                    2) jlink plugin to create image
+                    3) jpackage:
+
+                    jpackage -runtime-image target/calculatorfx
+                    -module calculatorfx/com.xdavide9.calculatorfx.CalculatorFXApplication -win-shortcut
+                    -name CalculatorFX -dest target -icon src/main/resources/com/xdavide9/calculatorfx/icon.ico
+                    -win-dir-chooser -app-version 1.1.0
+
+        -->
     </build>
 </project>

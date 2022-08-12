@@ -1,4 +1,4 @@
-module com.xdavide9.calculatorfx {
+module calculatorfx {
     requires javafx.controls;
     requires javafx.fxml;
 
